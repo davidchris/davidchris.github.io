@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>David Wilde</title>
+    <link>/</link>
+    <description>Recent content on David Wilde</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; Copyright Year, Your Name</copyright>
+    <lastBuildDate>Mon, 25 May 2020 11:33:40 +0200</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Mon, 25 May 2020 11:33:40 +0200</pubDate>
+      
+      <guid>/about/</guid>
+      <description>My name is David Wilde.
+My background is in economics. These days I&amp;rsquo;m highly interested in Data Science applications in payment risk management.
+This is accompanied by exercising and constantly improving my leadership skills and studying and practicing decision making under uncertainty.
+I love to read alot about the above mentioned topics.</description>
+    </item>
+    
+    <item>
+      <title>Creating This Website</title>
+      <link>/posts/creating-this-website/</link>
+      <pubDate>Mon, 25 May 2020 11:10:55 +0200</pubDate>
+      
+      <guid>/posts/creating-this-website/</guid>
+      <description>This is the start of my personal website. And instead of writing some generic, somewhat empty first post saying &amp;lsquo;Hello World!&#39;. I instead want to write about how I created this website. Foremost as a tutorial for myself.</description>
+    </item>
+    
+  </channel>
+</rss>

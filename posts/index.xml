@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on David Wilde</title>
+    <link>/posts/</link>
+    <description>Recent content in Posts on David Wilde</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; Copyright Year, Your Name</copyright>
+    <lastBuildDate>Mon, 25 May 2020 11:10:55 +0200</lastBuildDate>
+    
+	<atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Creating This Website</title>
+      <link>/posts/creating-this-website/</link>
+      <pubDate>Mon, 25 May 2020 11:10:55 +0200</pubDate>
+      
+      <guid>/posts/creating-this-website/</guid>
+      <description>This is the start of my personal website. And instead of writing some generic, somewhat empty first post saying &amp;lsquo;Hello World!&#39;. I instead want to write about how I created this website. Foremost as a tutorial for myself.</description>
+    </item>
+    
+  </channel>
+</rss>
