@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; Copyright Year, Your Name</copyright>
-    <lastBuildDate>Mon, 25 May 2020 11:10:55 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 25 May 2020 09:10:55 +0000</lastBuildDate>
     
 	<atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,10 +15,12 @@
     <item>
       <title>Creating This Website</title>
       <link>/posts/creating-this-website/</link>
-      <pubDate>Mon, 25 May 2020 11:10:55 +0200</pubDate>
+      <pubDate>Mon, 25 May 2020 09:10:55 +0000</pubDate>
       
       <guid>/posts/creating-this-website/</guid>
-      <description>This is the start of my personal website. And instead of writing some generic, somewhat empty first post saying &amp;lsquo;Hello World!&#39;. I instead want to write about how I created this website. Foremost as a tutorial for myself.</description>
+      <description>This is the start of my personal website. And instead of writing some generic, somewhat empty first post saying &amp;lsquo;Hello World!&#39;. I instead want to write about how I created this website. Foremost as a tutorial for myself.
+Static Site Generation I went with Hugo, after some research online:
+ You could all build it by yourself Jekyll, generates html with themes from markdown, runs locally, well integrated with GitHub, written in Ruby (I think) Hugo, fast, works everywhere, easy to use, written in Go  And yes, it&amp;rsquo;s fast and easy to use.</description>
     </item>
     
   </channel>
