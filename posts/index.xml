@@ -1,23 +1,58 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Posts on David Wilde</title>
-    <link>https://david.wilde-ventures.com/posts/</link>
-    <description>Recent content in Posts on David Wilde</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 25 May 2020 09:10:55 +0000</lastBuildDate><atom:link href="https://david.wilde-ventures.com/posts/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Creating This Website</title>
-      <link>https://david.wilde-ventures.com/posts/creating-this-website/</link>
-      <pubDate>Mon, 25 May 2020 09:10:55 +0000</pubDate>
-      
-      <guid>https://david.wilde-ventures.com/posts/creating-this-website/</guid>
-      <description>This is the start of my personal website. And instead of writing some generic, somewhat empty first post saying &amp;lsquo;Hello World!&amp;rsquo;. I instead want to write about how I created this website. Foremost as a tutorial for myself.
-Static Site Generation    I went with Hugo, after some research online:
+    <channel>
+        <title>Posts on David Wilde</title>
+        <link>https://david.wilde-ventures.com/posts/</link>
+        <description>Recent content in Posts on David Wilde</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+        <lastBuildDate>Mon, 25 May 2020 09:10:55 +0000</lastBuildDate>
+        <atom:link href="https://david.wilde-ventures.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Creating This Website</title>
+            <link>https://david.wilde-ventures.com/posts/creating-this-website/</link>
+            <pubDate>Mon, 25 May 2020 09:10:55 +0000</pubDate>
+            
+            <guid>https://david.wilde-ventures.com/posts/creating-this-website/</guid>
+            <description>This is the start of my personal website. And instead of writing some generic, somewhat empty first post saying &amp;lsquo;Hello World!&amp;rsquo;. I instead want to write about how I created this website. Foremost as a tutorial for myself.
+Static Site Generation I went with Hugo, after some research online:
  You could all build it by yourself Jekyll, generates html with themes from markdown, runs locally, well integrated with GitHub, written in Ruby (I think) Hugo, fast, works everywhere, easy to use, written in Go  And yes, it&amp;rsquo;s fast and easy to use.</description>
-    </item>
-    
-  </channel>
+            <content type="html"><![CDATA[<p>This is the start of my personal website. And instead of writing some generic, somewhat empty first post saying &lsquo;Hello World!&rsquo;. I instead want to write about how I created this website. Foremost as a tutorial for myself.</p>
+<h2 id="static-site-generation">Static Site Generation</h2>
+<p>I went with Hugo, after some research online:</p>
+<ul>
+<li>You could all build it by yourself</li>
+<li>Jekyll, generates html with themes from markdown, runs locally, well integrated with GitHub, written in Ruby (I think)</li>
+<li>Hugo, fast, works everywhere, easy to use, written in Go</li>
+</ul>
+<p>And yes, it&rsquo;s fast and easy to use. I rebuild my website from scratch several times one day and there was no hustle. Utilizing one of the many themes available (<a href="https://themes.gohugo.io">Hugo Themes</a>) is also straight forward.</p>
+<p>For this site I used the <a href="https://themes.gohugo.io/themes/hugo-theme-hello-friend-ng/">hello-friend-ng theme</a> from <a href="https://atlialp.com">Djordje Atlialp</a>.</p>
+<h2 id="domain">Domain</h2>
+<p>I probably didn&rsquo;t do it properly here, let&rsquo;s see:</p>
+<p>I bought or rented a domain, actually for another project, with GoDaddy. It seemed straight forward for me. Then, for some reason, I decided to create a dynamic domain name server (DDNS) not with GoDaddy, but with dnyu.com.</p>
+<p>Though I forgot why I did that, it turns out that this was the easier choice for me. Managing my DNS from dnyu is more convenient. The UI looks older, but reacts faster and everything is more easily accessible.</p>
+<h2 id="hosting">Hosting</h2>
+<p>It was a rough ride here.</p>
+<p>First I could not decide for several days whether to host it at home, on a VM in the cloud or via GitHub/Gitlab. I figured that I want it somewhat in my own hands while not doing everything by myself.</p>
+<p>For now I went with hosting over GitHub pages. After testing GitLab pages and not wanting to go through setting up a VM myself for now it seemed like the best choice.</p>
+<p><strong>Edit 2021-08-09</strong>: Today I set the page to enforce https&ndash;even though it is just a static page, some browser (will) expect https to be there.
+This broke my page: theme was not working, and links were broken (i.e. adding the url twice behind each other).
+A fix I found here: <a href="https://github.com/matcornic/hugo-theme-learn/issues/204">Theme on github pages not working</a>.</p>
+<ul>
+<li>I changed the <code>baseURL</code> to include the https</li>
+<li>remove the contents of the <code>public</code> folder</li>
+<li>rebuild the site</li>
+</ul>
+<p>Now it seems to be fixed.</p>
+<h2 id="publishing">Publishing</h2>
+<p>Publishing goes as easy as described here: <a href="https://gohugo.io/hosting-and-deployment/hosting-on-github/">Deploy Hugo as a GitHub Pages project</a>.</p>
+<p><strong>Edit 2021-08-09</strong>: Something I forgot to add here which confused me a lot in the last few days is to have my <code>public/</code> directory as a git sub-module.
+This sub-module has the GitHub Page as its remote.
+The &lsquo;rest&rsquo; of the code, the repository, is the source to generate the page, which goes into another git repository.</p>
+<p>Thanks to: <a href="https://www.mytechramblings.com/posts/create-a-website-with-hugo-and-gh/">Create and host a blog with Hugo and GitHub Pages in less than 30 minutes</a></p>
+]]></content>
+        </item>
+        
+    </channel>
 </rss>
