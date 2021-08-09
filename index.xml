@@ -27,7 +27,7 @@ I love to read a lot about the above mentioned topics.</description>
       
       <guid>david.wilde-ventures.com/posts/creating-this-website/</guid>
       <description>This is the start of my personal website. And instead of writing some generic, somewhat empty first post saying &amp;lsquo;Hello World!&amp;rsquo;. I instead want to write about how I created this website. Foremost as a tutorial for myself.
-Static Site Generation I went with Hugo, after some research online:
+Static Site Generation    I went with Hugo, after some research online:
  You could all build it by yourself Jekyll, generates html with themes from markdown, runs locally, well integrated with GitHub, written in Ruby (I think) Hugo, fast, works everywhere, easy to use, written in Go  And yes, it&amp;rsquo;s fast and easy to use.</description>
     </item>
     
