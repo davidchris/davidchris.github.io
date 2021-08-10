@@ -5,9 +5,30 @@
         <description>Recent content in Posts on David Wilde</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-        <lastBuildDate>Mon, 25 May 2020 09:10:55 +0000</lastBuildDate>
+        <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+        <lastBuildDate>Tue, 10 Aug 2021 20:15:20 +0200</lastBuildDate>
         <atom:link href="https://david.wilde-ventures.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Writing Julia Code Examples for Taleb&#39;s &#39;Statistical Consequences of Fat Tails&#39;</title>
+            <link>https://david.wilde-ventures.com/posts/writing-julia-code-examples-scft/</link>
+            <pubDate>Tue, 10 Aug 2021 20:15:20 +0200</pubDate>
+            
+            <guid>https://david.wilde-ventures.com/posts/writing-julia-code-examples-scft/</guid>
+            <description>Inspired Tinkering I attended the Real World Risk Institute Seminar (iteration 15) earlier in 2021 and simultaneously started visiting the global reading club meetup of Nassim Nicholas Taleb&amp;rsquo;s first book of the technical Incerto series: &amp;ldquo;Statistical Consequences of Fat Tails&amp;rdquo;.
+Among other things both events inspired me to &amp;ldquo;code-up&amp;rdquo; statistical examples, using the Julia language.
+The first example can be seen here, and code can be checked-out here.
+My current plan&amp;ndash;undoubtedly changing in the future&amp;ndash;is to add these examples to this repository</description>
+            <content type="html"><![CDATA[<h2 id="inspired-tinkering">Inspired Tinkering</h2>
+<p>I attended the <a href="https://realworldrisk.com"><em>Real World Risk Institute</em> Seminar</a> (iteration 15) earlier in 2021 and simultaneously started visiting the <a href="https://www.meetup.com/de-DE/global-technical-incerto-reading-club/">global reading club meetup</a> of Nassim Nicholas Taleb&rsquo;s first book of the technical Incerto series: <a href="https://arxiv.org/abs/2001.10488">&ldquo;Statistical Consequences of Fat Tails&rdquo;</a>.</p>
+<p>Among other things both events inspired me to &ldquo;code-up&rdquo; statistical examples, using the <a href="https://arxiv.org/abs/2001.10488">Julia language</a>.</p>
+<p>The first example can be seen <a href="https://david.wilde-ventures.com/SCFT/chapter04_01.html">here</a>,
+and code can be checked-out <a href="https://github.com/davidchris/RWRI15Tinkering.jl/blob/main/src/SCFT-examples/chapter_04.jl">here</a>.</p>
+<p>My current plan&ndash;undoubtedly changing in the future&ndash;is to add these examples to this <a href="https://github.com/davidchris/RWRI15Tinkering.jl">repository</a></p>
+<h2 id="why">Why?</h2>
+<p>As to the reason why I&rsquo;m doing this: practice&ndash;practice in the Julia language and practice of mathematical and statistical understanding&ndash;then, I will see what to make of this next.</p>
+]]></content>
+        </item>
         
         <item>
             <title>Creating This Website</title>

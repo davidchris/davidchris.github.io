@@ -6,8 +6,20 @@
     <description>Recent content on David Wilde</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 25 May 2020 09:10:55 +0000</lastBuildDate><atom:link href="https://david.wilde-ventures.com/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+    <lastBuildDate>Tue, 10 Aug 2021 20:15:20 +0200</lastBuildDate><atom:link href="https://david.wilde-ventures.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Writing Julia Code Examples for Taleb&#39;s &#39;Statistical Consequences of Fat Tails&#39;</title>
+      <link>https://david.wilde-ventures.com/posts/writing-julia-code-examples-scft/</link>
+      <pubDate>Tue, 10 Aug 2021 20:15:20 +0200</pubDate>
+      
+      <guid>https://david.wilde-ventures.com/posts/writing-julia-code-examples-scft/</guid>
+      <description>Inspired Tinkering I attended the Real World Risk Institute Seminar (iteration 15) earlier in 2021 and simultaneously started visiting the global reading club meetup of Nassim Nicholas Taleb&amp;rsquo;s first book of the technical Incerto series: &amp;ldquo;Statistical Consequences of Fat Tails&amp;rdquo;.
+Among other things both events inspired me to &amp;ldquo;code-up&amp;rdquo; statistical examples, using the Julia language.
+The first example can be seen here, and code can be checked-out here.
+My current plan&amp;ndash;undoubtedly changing in the future&amp;ndash;is to add these examples to this repository</description>
+    </item>
+    
     <item>
       <title>About</title>
       <link>https://david.wilde-ventures.com/about/</link>

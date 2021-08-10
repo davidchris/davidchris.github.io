@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="David Wilde ">
+<meta name="description" content="Inspired Tinkering I attended the Real World Risk Institute Seminar (iteration 15) earlier in 2021 and simultaneously started visiting the global reading club meetup of Nassim Nicholas Taleb&amp;rsquo;s first book of the technical Incerto series: &amp;ldquo;Statistical Consequences of Fat Tails&amp;rdquo;.
+Among other things both events inspired me to &amp;ldquo;code-up&amp;rdquo; statistical examples, using the Julia language.
+The first example can be seen here, and code can be checked-out here.
+My current plan&amp;ndash;undoubtedly changing in the future&amp;ndash;is to add these examples to this repository" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="#494f5c" />
+<link rel="canonical" href="https://david.wilde-ventures.com/posts/writing-julia-code-examples-scft/" />
+
+
+    <title>
+        
+            Writing Julia Code Examples for Taleb&#39;s &#39;Statistical Consequences of Fat Tails&#39; :: David Wilde 
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.031a8efc33f94f55a4071bf4e91596478a5809fc8c148fab113801189cfd2152.css">
+
+
+
+
+
+
+<meta itemprop="name" content="Writing Julia Code Examples for Taleb&#39;s &#39;Statistical Consequences of Fat Tails&#39;">
+<meta itemprop="description" content="Inspired Tinkering I attended the Real World Risk Institute Seminar (iteration 15) earlier in 2021 and simultaneously started visiting the global reading club meetup of Nassim Nicholas Taleb&rsquo;s first book of the technical Incerto series: &ldquo;Statistical Consequences of Fat Tails&rdquo;.
+Among other things both events inspired me to &ldquo;code-up&rdquo; statistical examples, using the Julia language.
+The first example can be seen here, and code can be checked-out here.
+My current plan&ndash;undoubtedly changing in the future&ndash;is to add these examples to this repository"><meta itemprop="datePublished" content="2021-08-10T20:15:20+02:00" />
+<meta itemprop="dateModified" content="2021-08-10T20:15:20+02:00" />
+<meta itemprop="wordCount" content="112">
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Writing Julia Code Examples for Taleb&#39;s &#39;Statistical Consequences of Fat Tails&#39;"/>
+<meta name="twitter:description" content="Inspired Tinkering I attended the Real World Risk Institute Seminar (iteration 15) earlier in 2021 and simultaneously started visiting the global reading club meetup of Nassim Nicholas Taleb&rsquo;s first book of the technical Incerto series: &ldquo;Statistical Consequences of Fat Tails&rdquo;.
+Among other things both events inspired me to &ldquo;code-up&rdquo; statistical examples, using the Julia language.
+The first example can be seen here, and code can be checked-out here.
+My current plan&ndash;undoubtedly changing in the future&ndash;is to add these examples to this repository"/>
+
+
+
+
+
+
+
+
+    <meta property="article:published_time" content="2021-08-10 20:15:20 &#43;0200 CEST" />
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">David Wilde</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts/">Posts</a></li><li><a href="/SCFT/chapter04_01.html">SCFT</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        One minute
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://david.wilde-ventures.com/posts/writing-julia-code-examples-scft/">Writing Julia Code Examples for Taleb&rsquo;s &lsquo;Statistical Consequences of Fat Tails&rsquo;</a>
+      </h1>
+
+      
+
+      
+
+      
+
+      <div class="post-content">
+        <h2 id="inspired-tinkering">Inspired Tinkering</h2>
+<p>I attended the <a href="https://realworldrisk.com"><em>Real World Risk Institute</em> Seminar</a> (iteration 15) earlier in 2021 and simultaneously started visiting the <a href="https://www.meetup.com/de-DE/global-technical-incerto-reading-club/">global reading club meetup</a> of Nassim Nicholas Taleb&rsquo;s first book of the technical Incerto series: <a href="https://arxiv.org/abs/2001.10488">&ldquo;Statistical Consequences of Fat Tails&rdquo;</a>.</p>
+<p>Among other things both events inspired me to &ldquo;code-up&rdquo; statistical examples, using the <a href="https://arxiv.org/abs/2001.10488">Julia language</a>.</p>
+<p>The first example can be seen <a href="https://david.wilde-ventures.com/SCFT/chapter04_01.html">here</a>,
+and code can be checked-out <a href="https://github.com/davidchris/RWRI15Tinkering.jl/blob/main/src/SCFT-examples/chapter_04.jl">here</a>.</p>
+<p>My current plan&ndash;undoubtedly changing in the future&ndash;is to add these examples to this <a href="https://github.com/davidchris/RWRI15Tinkering.jl">repository</a></p>
+<h2 id="why">Why?</h2>
+<p>As to the reason why I&rsquo;m doing this: practice&ndash;practice in the Julia language and practice of mathematical and statistical understanding&ndash;then, I will see what to make of this next.</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        112 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2021-08-10 20:15 &#43;0200
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://david.wilde-ventures.com/posts/creating-this-website/">
+                    <span class="button__text">Creating This Website</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.599099f1f14b78b657d524b28e10e0c5098e7cd46e9c7aed73d577068a276c3ff1bb234cbf29cb313333e83cf411727b43157c91ce5b809e2ffc81664614608e.js" integrity="sha512-WZCZ8fFLeLZX1SSyjhDgxQmOfNRunHrtc9V3BoonbD/xuyNMvynLMTMz6Dz0EXJ7QxV8kc5bgJ4v/IFmRhRgjg=="></script>
+
+
+
+    </body>
+</html>
