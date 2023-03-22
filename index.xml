@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Tue, 10 Aug 2021 20:15:20 +0200</lastBuildDate><atom:link href="https://david.wilde-ventures.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 22 Mar 2023 09:31:06 +0100</lastBuildDate><atom:link href="https://david.wilde-ventures.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My Issue With LLM in Programming</title>
+      <link>https://david.wilde-ventures.com/posts/my-issue-with-llm-in-programming/</link>
+      <pubDate>Wed, 22 Mar 2023 09:31:06 +0100</pubDate>
+      
+      <guid>https://david.wilde-ventures.com/posts/my-issue-with-llm-in-programming/</guid>
+      <description>There are organizations (example, nothing in particular about this Org, I stumbled over their blog post recently, which inspired the thoughts below) trying to build LLM-based systems that can program. In the example posted above they describe the difficulties with LLM and accessing real-word applications like databases.
+The main issue that exists is hallucination. LLMs can write SQL, but they are often prone to making up tables, making up fields, and generally just writing SQL that if executed against your database would not actually be valid.</description>
+    </item>
+    
     <item>
       <title>Writing Julia Code Examples for Taleb&#39;s &#39;Statistical Consequences of Fat Tails&#39;</title>
       <link>https://david.wilde-ventures.com/posts/writing-julia-code-examples-scft/</link>
@@ -27,7 +37,7 @@ My current plan&amp;ndash;undoubtedly changing in the future&amp;ndash;is to add
       
       <guid>https://david.wilde-ventures.com/about/</guid>
       <description>My name is David Wilde, I&amp;rsquo;m based in Berlin, Germany.
-My educational background is in economics, which I augment more and more with applied mathematics, statistics, probability and software development. These days I&amp;rsquo;m highly interested and spend most of my time in Data Science, specifically in it&amp;rsquo;s applications in (automated) decision making under uncertainty and risk management.
+My educational background is in Economics, which I augment more and more with applied mathematics, statistics, probability and software development. These days I&amp;rsquo;m highly interested and spend most of my time in Data Science, specifically in it&amp;rsquo;s applications in (automated) decision making under uncertainty and risk management.
 Beyond that, I have an inclination towards pragmatic and servant-style leadership to deliver a meaningful impact in my work.</description>
     </item>
     
@@ -39,7 +49,7 @@ Beyond that, I have an inclination towards pragmatic and servant-style leadershi
       <guid>https://david.wilde-ventures.com/posts/creating-this-website/</guid>
       <description>This is the start of my personal website. And instead of writing some generic, somewhat empty first post saying &amp;lsquo;Hello World!&amp;rsquo;. I instead want to write about how I created this website. Foremost as a tutorial for myself.
 Static Site Generation I went with Hugo, after some research online:
- You could all build it by yourself Jekyll, generates html with themes from markdown, runs locally, well integrated with GitHub, written in Ruby (I think) Hugo, fast, works everywhere, easy to use, written in Go  And yes, it&amp;rsquo;s fast and easy to use.</description>
+You could all build it by yourself Jekyll, generates html with themes from markdown, runs locally, well integrated with GitHub, written in Ruby (I think) Hugo, fast, works everywhere, easy to use, written in Go And yes, it&amp;rsquo;s fast and easy to use.</description>
     </item>
     
   </channel>
