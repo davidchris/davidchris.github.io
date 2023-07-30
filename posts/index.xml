@@ -4,10 +4,92 @@
         <link>https://david.wilde-ventures.com/posts/</link>
         <description>Recent content in Posts on David Wilde</description>
         <generator>Hugo -- gohugo.io</generator>
-        <language>en-us</language>
+        <language>en</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Wed, 22 Mar 2023 09:31:06 +0100</lastBuildDate>
+        <lastBuildDate>Sun, 30 Jul 2023 16:53:13 +0200</lastBuildDate>
         <atom:link href="https://david.wilde-ventures.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>On AI and Fears About the Future</title>
+            <link>https://david.wilde-ventures.com/posts/on-ai-and-fears-about-the-future/</link>
+            <pubDate>Sun, 30 Jul 2023 16:53:13 +0200</pubDate>
+            
+            <guid>https://david.wilde-ventures.com/posts/on-ai-and-fears-about-the-future/</guid>
+            <description>Preamble My thoughts are inspired by listening to Lex Fridman’s podcast episode with Yuval Noah Harari1. I really enjoyed listening to it, it was inspiring to me, thought provoking. Some arguments he made in the interview I don&amp;rsquo;t fully subscribe to. I try to write down my thoughts about them here.
+Roughly paraphrased I understood Harari’s point on future risks of AI2 as follows:
+AI is a new type of tool: it can make decisions on its own and generate ideas on its own AI will likely understand us (humans) very well, but we don’t understand it AI and bio-engineering might be used to induce change in humans to serve the nefarious ends of powerful, authoritarian regimes To point 3 - Technology Misuse I agree.</description>
+            <content type="html"><![CDATA[<h2 id="preamble">Preamble</h2>
+<p>My thoughts are inspired by listening to Lex Fridman’s podcast episode with Yuval Noah Harari<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.
+I really enjoyed listening to it, it was inspiring to me, thought provoking.
+Some arguments he made in the interview I don&rsquo;t fully subscribe to. I try to write down my thoughts about them here.</p>
+<p>Roughly paraphrased I understood Harari’s point on future risks of AI<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>  as follows:</p>
+<ol>
+<li>AI is a new type of tool: it can make decisions on its own and generate ideas on its own</li>
+<li>AI will likely understand us (humans) very well, but we don’t understand it</li>
+<li>AI and bio-engineering might be used to induce change in humans to serve the nefarious ends of powerful, authoritarian regimes</li>
+</ol>
+<h2 id="to-point-3---technology-misuse">To point 3 - Technology Misuse</h2>
+<p>I agree. It sounds plausible to me that once the technology is available to gain an advantage, i.e. move closer to ones goals, it will be used in that way.
+Humans use them for “good” and for “evil”. As an example: 1) AlphaFold from DeepMind is speeding up biology research to a new degree.
+2) With the availability of crypto currencies and their ease of sending money via uncontrolled channels, cyber criminals had a hay day (see the influx of ransom ware attacks in the past 5 years).
+Similarly, we might observe how the generative text capabilities of large language models will be used to generate scam and phishing campaigns that will appear more authentic.</p>
+<p>I cannot and don’t want to forecast a trend how this might evolve with more capable technology.
+All I can see from my perspective, with my work experience in detecting malicious behavior in the digital domain, is that there always has been a cat and mouse game.
+Sometimes the mouse scored a lot of cheese before the cat could figure out the tactics to catch it, but the cat never starved.
+Therefore, while I see Harari’s concerns I am vaguely optimistic that we will figure out ways to cope with it.</p>
+<h2 id="to-point-2---understanding">To point 2 - Understanding</h2>
+<p>I am not sure what “breed” of AI Harari imagined in this interview. From my understanding no model is able to understand humans to the extent to manipulate them with intent.
+It is true that we don’t know in detail how large language models gain their capability and generate their output after being trained on large quantities of text.</p>
+<p>Where manipulation takes place, I’d argue, is in recommendation engines. Prominent examples are the systems that fill the feeds of Facebook, Twitter and YouTube.
+On a high level, here the systems are fed with user interaction data and set to predict certain desired outcomes, coupled with an optimization function.
+The manipulations comes from the desired target metric during the training of these systems. Not all aspects of that manipulation (one could also call it nudging or recommending in most cases) are intentional.
+This is because it is difficult to think the implication and effects of these systems through to the nth-degree.
+The reason for that lies in the complexity of the problem.
+The creators of these system have a goal in their mind and have to assume that the data they collect and the target they set will achieve that goal.
+The relationship between the training data, the target and the goal is not linear, not trivial, because it involves human behavior—in groups,
+not even just individual (if I learned one thing from my undergrad in economics its that we are really bad at predicting group interactions).
+One cannot think through this problem and come up with an equation to solve it, not at least with a proper serving of uncertainty.</p>
+<p>That is why ML algorithms, equations that adjust parameters based on training data and an objective, are useful.
+With ML as a tool, there is no need to develop a theory and deduce a model from it. Instead it is a practical exercise to train the system, see where it fails and adapt from there.
+This exploratory approach brings along the fact that the map of its unintended side effects is incomplete.</p>
+<p>ML systems do the thing they were trained to do.
+And as with all types of computer behavior, the computer follows what the human told it to do to the word, even if the human meant it another way.
+These large language models don’t understand us the same way a good therapist would.
+They detect patterns and act according to their training.</p>
+<h2 id="to-point-1---decisions-and-ideas">To point 1 - Decisions and Ideas</h2>
+<p>Again, I am not sure what Harari meant here.</p>
+<h3 id="decision-systems">Decision Systems</h3>
+<p>Rule-based decision system were making decisions by themselves even before a wide adoption of ML systems in the domains he mentioned, credit and loan scoring.
+ML systems are in most cases better at that than hand-written rules.</p>
+<p>I will now assume for the sake of argument that Harari meant that “AI” systems would follow their own agenda and base their decisions on that.
+In that case I don’t know of evidence today that “AI” systems are capable of that.
+The agenda, i.e. objective or target, of those systems today is set by humans.
+As described in “to point two”: ML systems fall to their level of training.</p>
+<h3 id="idea-generation-is-different">Idea generation is different</h3>
+<p>A decision system backed by rules or a trained ML model for the application of credit scoring does not generate ideas.
+Even with large language models I’d say they are rehashing what they’ve learned and are not generating truly new ideas.
+But then comes the whole debate if humans are any different.</p>
+<p>An example in the other direction could be AlphaFold.
+When it discovers new protein structures can one describe that as a new idea? Papers where written by humans before on such discoveries.
+I have a hard time to draw the analogy to systems like GPT-4.
+AlphaFold was specifically designed to do that and is in essence exploring the space of possible protein structure.
+We can generate new discoveries more efficiently than with the tools before.
+However, are all idea discoveries exploration of some space? I don’t know.
+I feel this question is out of my area of expertise; might need to ask a psychologist and philosopher about that.</p>
+<p>Nevertheless, I’m skeptic and hesitant to describe LLMs as they are today as idea generators.</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><a href="https://lexfridman.com/yuval-noah-harari/">Yuval Noah Harari: Human Nature, Intelligence, Power, and Conspiracies | Lex Fridman Podcast #390</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p>See from timestamp 2:06:59, &ldquo;AI safety&rdquo; in the episode&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+]]></content>
+        </item>
         
         <item>
             <title>My Issue With LLM in Programming</title>

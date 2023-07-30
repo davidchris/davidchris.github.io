@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>large-language-models on David Wilde</title>
-    <link>https://david.wilde-ventures.com/tags/large-language-models/</link>
-    <description>Recent content in large-language-models on David Wilde</description>
+    <title>artificial-intelligence on David Wilde</title>
+    <link>https://david.wilde-ventures.com/tags/artificial-intelligence/</link>
+    <description>Recent content in artificial-intelligence on David Wilde</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sun, 30 Jul 2023 16:53:13 +0200</lastBuildDate><atom:link href="https://david.wilde-ventures.com/tags/large-language-models/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 30 Jul 2023 16:53:13 +0200</lastBuildDate><atom:link href="https://david.wilde-ventures.com/tags/artificial-intelligence/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>On AI and Fears About the Future</title>
       <link>https://david.wilde-ventures.com/posts/on-ai-and-fears-about-the-future/</link>
@@ -17,16 +17,6 @@
       <description>Preamble My thoughts are inspired by listening to Lex Fridman’s podcast episode with Yuval Noah Harari1. I really enjoyed listening to it, it was inspiring to me, thought provoking. Some arguments he made in the interview I don&amp;rsquo;t fully subscribe to. I try to write down my thoughts about them here.
 Roughly paraphrased I understood Harari’s point on future risks of AI2 as follows:
 AI is a new type of tool: it can make decisions on its own and generate ideas on its own AI will likely understand us (humans) very well, but we don’t understand it AI and bio-engineering might be used to induce change in humans to serve the nefarious ends of powerful, authoritarian regimes To point 3 - Technology Misuse I agree.</description>
-    </item>
-    
-    <item>
-      <title>My Issue With LLM in Programming</title>
-      <link>https://david.wilde-ventures.com/posts/my-issue-with-llm-in-programming/</link>
-      <pubDate>Wed, 22 Mar 2023 09:31:06 +0100</pubDate>
-      
-      <guid>https://david.wilde-ventures.com/posts/my-issue-with-llm-in-programming/</guid>
-      <description>There are organizations (example, nothing in particular about this Org, I stumbled over their blog post recently, which inspired the thoughts below) trying to build LLM-based systems that can program. In the example posted above they describe the difficulties with LLM and accessing real-word applications like databases.
-The main issue that exists is hallucination. LLMs can write SQL, but they are often prone to making up tables, making up fields, and generally just writing SQL that if executed against your database would not actually be valid.</description>
     </item>
     
   </channel>
