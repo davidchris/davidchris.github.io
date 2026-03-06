@@ -4,64 +4,52 @@
     <title>David Wilde</title>
     <link>https://david.wilde-ventures.com/</link>
     <description>Recent content on David Wilde</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
+    <generator>Hugo</generator>
+    <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sun, 30 Jul 2023 16:53:13 +0200</lastBuildDate><atom:link href="https://david.wilde-ventures.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 04 Mar 2026 13:02:11 +0100</lastBuildDate>
+    <atom:link href="https://david.wilde-ventures.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Why I Built My Own Transaction Categorizer</title>
+      <link>https://david.wilde-ventures.com/posts/fafycat-family-finance-transaction-categorizer/</link>
+      <pubDate>Wed, 04 Mar 2026 13:02:11 +0100</pubDate>
+      <guid>https://david.wilde-ventures.com/posts/fafycat-family-finance-transaction-categorizer/</guid>
+      <description>&lt;p&gt;Every month, same ritual. Export CSV from the bank. Open the spreadsheet. Scroll through 80-odd transactions and manually tag each one: groceries, rent, insurance, that mystery debit from three weeks ago. Copy the numbers into the budget tracker. Close the laptop feeling like I just did someone else&amp;rsquo;s homework.&lt;/p&gt;&#xA;&lt;p&gt;I&amp;rsquo;ve been doing this for years. My wife and I track our household spending across maybe 20 categories, because we want to know where the money goes, likely this is a work habit from me to have factual information and not only gut feelings about what&amp;rsquo;s going on.&#xA;And we want to be more deliberate about how we spend our money. The spreadsheet worked. It was just soul-crushingly tedious.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>On AI and Fears About the Future</title>
       <link>https://david.wilde-ventures.com/posts/on-ai-and-fears-about-the-future/</link>
-      <pubDate>Sun, 30 Jul 2023 16:53:13 +0200</pubDate>
-      
+      <pubDate>Sun, 30 Jul 2023 16:53:00 +0200</pubDate>
       <guid>https://david.wilde-ventures.com/posts/on-ai-and-fears-about-the-future/</guid>
-      <description>Preamble My thoughts are inspired by listening to Lex Fridman’s podcast episode with Yuval Noah Harari1. I really enjoyed listening to it, it was inspiring to me, thought provoking. Some arguments he made in the interview I don&amp;rsquo;t fully subscribe to. I try to write down my thoughts about them here.
-Roughly paraphrased I understood Harari’s point on future risks of AI2 as follows:
-AI is a new type of tool: it can make decisions on its own and generate ideas on its own AI will likely understand us (humans) very well, but we don’t understand it AI and bio-engineering might be used to induce change in humans to serve the nefarious ends of powerful, authoritarian regimes To point 3 - Technology Misuse I agree.</description>
+      <description>&lt;h2 id=&#34;preamble&#34;&gt;Preamble&lt;/h2&gt;&#xA;&lt;p&gt;My thoughts are inspired by listening to Lex Fridman&amp;rsquo;s podcast episode with Yuval Noah Harari&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;. I really enjoyed listening to it, it was inspiring to me, thought provoking. Some arguments he made in the interview I don&amp;rsquo;t fully subscribe to. I try to write down my thoughts about them here.&lt;/p&gt;&#xA;&lt;p&gt;Roughly paraphrased I understood Harari&amp;rsquo;s point on future risks of AI&lt;sup id=&#34;fnref:2&#34;&gt;&lt;a href=&#34;#fn:2&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;2&lt;/a&gt;&lt;/sup&gt; as follows:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;AI is a new type of tool: it can make decisions on its own and generate ideas on its own&lt;/li&gt;&#xA;&lt;li&gt;AI will likely understand us (humans) very well, but we don&amp;rsquo;t understand it&lt;/li&gt;&#xA;&lt;li&gt;AI and bio-engineering might be used to induce change in humans to serve the nefarious ends of powerful, authoritarian regimes&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;to-point-3---technology-misuse&#34;&gt;To point 3 - Technology Misuse&lt;/h2&gt;&#xA;&lt;p&gt;I agree. It sounds plausible to me that once the technology is available to gain an advantage, i.e. move closer to ones goals, it will be used in that way. Humans use them for &amp;ldquo;good&amp;rdquo; and for &amp;ldquo;evil&amp;rdquo;. As an example: 1) AlphaFold from DeepMind is speeding up biology research to a new degree. 2) With the availability of crypto currencies and their ease of sending money via uncontrolled channels, cyber criminals had a hay day (see the influx of ransom ware attacks in the past 5 years). Similarly, we might observe how the generative text capabilities of large language models will be used to generate scam and phishing campaigns that will appear more authentic.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>My Issue With LLM in Programming</title>
       <link>https://david.wilde-ventures.com/posts/my-issue-with-llm-in-programming/</link>
-      <pubDate>Wed, 22 Mar 2023 09:31:06 +0100</pubDate>
-      
+      <pubDate>Wed, 22 Mar 2023 00:00:00 +0000</pubDate>
       <guid>https://david.wilde-ventures.com/posts/my-issue-with-llm-in-programming/</guid>
-      <description>There are organizations (example, nothing in particular about this Org, I stumbled over their blog post recently, which inspired the thoughts below) trying to build LLM-based systems that can program. In the example posted above they describe the difficulties with LLM and accessing real-word applications like databases.
-The main issue that exists is hallucination. LLMs can write SQL, but they are often prone to making up tables, making up fields, and generally just writing SQL that if executed against your database would not actually be valid.</description>
+      <description>&lt;p&gt;There are organizations (&lt;a href=&#34;https://www.numbersstation.ai/post/fine-tuning-a-gpt-llm-to-sql-for-enterprise-use-cases&#34;&gt;example&lt;/a&gt;, nothing in particular about this Org, I stumbled over their blog post recently, which inspired the thoughts below) trying to build LLM-based systems that can program. In the example posted above they describe the difficulties with LLM and accessing real-word applications like databases.&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;The main issue that exists is hallucination. LLMs can write SQL, but they are often prone to making up tables, making up fields, and generally just writing SQL that if executed against your database would not actually be valid. So one of the big challenges we face is how to ground the LLM in reality so that it produces valid SQL. The main idea to fix this (we will go into more detail below) is to provide the LLM with knowledge about what actually exists in the database and tell it to write a SQL query consistent with that. However, this runs into a second issue - the context window length. LLMs have some context window which limits the amount of text they can operate over. This is relevant because SQL databases often contain a lot of information. So if we were to naively pass in all the data to ground the LLM in reality, we would likely run into this issue. A third issue is a more basic one: sometimes the LLM just messes up. The SQL it writes may be incorrect for whatever reason, or it could be correct but just return an unexpected result. What do we do then? Do we give up?&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>Writing Julia Code Examples for Taleb&#39;s &#39;Statistical Consequences of Fat Tails&#39;</title>
       <link>https://david.wilde-ventures.com/posts/writing-julia-code-examples-scft/</link>
       <pubDate>Tue, 10 Aug 2021 20:15:20 +0200</pubDate>
-      
       <guid>https://david.wilde-ventures.com/posts/writing-julia-code-examples-scft/</guid>
-      <description>Inspired Tinkering I attended the Real World Risk Institute Seminar (iteration 15) earlier in 2021 and simultaneously started visiting the global reading club meetup of Nassim Nicholas Taleb&amp;rsquo;s first book of the technical Incerto series: &amp;ldquo;Statistical Consequences of Fat Tails&amp;rdquo;.
-Among other things both events inspired me to &amp;ldquo;code-up&amp;rdquo; statistical examples, using the Julia language.
-The first example can be seen here, and code can be checked-out here.
-My current plan&amp;ndash;undoubtedly changing in the future&amp;ndash;is to add these examples to this repository</description>
+      <description>&lt;h2 id=&#34;inspired-tinkering&#34;&gt;Inspired Tinkering&lt;/h2&gt;&#xA;&lt;p&gt;I attended the &lt;a href=&#34;https://realworldrisk.com&#34;&gt;&lt;em&gt;Real World Risk Institute&lt;/em&gt; Seminar&lt;/a&gt; (iteration 15) earlier in 2021 and simultaneously started visiting the &lt;a href=&#34;https://www.meetup.com/de-DE/global-technical-incerto-reading-club/&#34;&gt;global reading club meetup&lt;/a&gt; of Nassim Nicholas Taleb&amp;rsquo;s first book of the technical Incerto series: &lt;a href=&#34;https://arxiv.org/abs/2001.10488&#34;&gt;&amp;ldquo;Statistical Consequences of Fat Tails&amp;rdquo;&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Among other things both events inspired me to &amp;ldquo;code-up&amp;rdquo; statistical examples, using the &lt;a href=&#34;https://arxiv.org/abs/2001.10488&#34;&gt;Julia language&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;The first example can be seen &lt;a href=&#34;https://david.wilde-ventures.com/SCFT/chapter04_01.html&#34;&gt;here&lt;/a&gt;,&#xA;and code can be checked-out &lt;a href=&#34;https://github.com/davidchris/RWRI15Tinkering.jl/blob/main/src/SCFT-examples/chapter_04.jl&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;My current plan&amp;ndash;undoubtedly changing in the future&amp;ndash;is to add these examples to this &lt;a href=&#34;https://github.com/davidchris/RWRI15Tinkering.jl&#34;&gt;repository&lt;/a&gt;&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>About</title>
       <link>https://david.wilde-ventures.com/about/</link>
       <pubDate>Mon, 25 May 2020 09:33:40 +0000</pubDate>
-      
       <guid>https://david.wilde-ventures.com/about/</guid>
-      <description>My name is David Wilde, I&amp;rsquo;m based in Berlin, Germany.
-My educational background is in Economics, which I augment more and more with applied mathematics, statistics, probability and software development. These days I&amp;rsquo;m highly interested and spend most of my time in Data Science, specifically in it&amp;rsquo;s applications in (automated) decision making under uncertainty and risk management.
-Beyond that, I have an inclination towards pragmatic and servant-style leadership to deliver a meaningful impact in my work.</description>
+      <description>&lt;p&gt;My name is David Wilde, I&amp;rsquo;m based in Berlin, Germany.&lt;/p&gt;&#xA;&lt;p&gt;My educational background is in economics, which I augment more and more with applied mathematics, statistics, probability and software development.&#xA;These days I&amp;rsquo;m highly interested and spend most of my time in Data Science, specifically in it&amp;rsquo;s applications in (automated) decision making under uncertainty and risk management.&lt;/p&gt;&#xA;&lt;p&gt;Beyond that, I have an inclination towards pragmatic and servant-style leadership to deliver a meaningful impact in my work.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>Creating This Website</title>
       <link>https://david.wilde-ventures.com/posts/creating-this-website/</link>
       <pubDate>Mon, 25 May 2020 09:10:55 +0000</pubDate>
-      
       <guid>https://david.wilde-ventures.com/posts/creating-this-website/</guid>
-      <description>This is the start of my personal website. And instead of writing some generic, somewhat empty first post saying &amp;lsquo;Hello World!&amp;rsquo;. I instead want to write about how I created this website. Foremost as a tutorial for myself.
-Static Site Generation I went with Hugo, after some research online:
-You could all build it by yourself Jekyll, generates html with themes from markdown, runs locally, well integrated with GitHub, written in Ruby (I think) Hugo, fast, works everywhere, easy to use, written in Go And yes, it&amp;rsquo;s fast and easy to use.</description>
+      <description>&lt;p&gt;This is the start of my personal website. And instead of writing some generic, somewhat empty first post saying &amp;lsquo;Hello World!&amp;rsquo;. I instead want to write about how I created this website. Foremost as a tutorial for myself.&lt;/p&gt;&#xA;&lt;h2 id=&#34;static-site-generation&#34;&gt;Static Site Generation&lt;/h2&gt;&#xA;&lt;p&gt;I went with Hugo, after some research online:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;You could all build it by yourself&lt;/li&gt;&#xA;&lt;li&gt;Jekyll, generates html with themes from markdown, runs locally, well integrated with GitHub, written in Ruby (I think)&lt;/li&gt;&#xA;&lt;li&gt;Hugo, fast, works everywhere, easy to use, written in Go&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;And yes, it&amp;rsquo;s fast and easy to use. I rebuild my website from scratch several times one day and there was no hustle. Utilizing one of the many themes available (&lt;a href=&#34;https://themes.gohugo.io&#34;&gt;Hugo Themes&lt;/a&gt;) is also straight forward.&lt;/p&gt;</description>
     </item>
-    
   </channel>
 </rss>

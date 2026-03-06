@@ -4,79 +4,96 @@
         <link>https://david.wilde-ventures.com/posts/</link>
         <description>Recent content in Posts on David Wilde</description>
         <generator>Hugo -- gohugo.io</generator>
-        <language>en</language>
+        <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Sun, 30 Jul 2023 16:53:13 +0200</lastBuildDate>
+        <lastBuildDate>Wed, 04 Mar 2026 13:02:11 +0100</lastBuildDate>
         <atom:link href="https://david.wilde-ventures.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Why I Built My Own Transaction Categorizer</title>
+            <link>https://david.wilde-ventures.com/posts/fafycat-family-finance-transaction-categorizer/</link>
+            <pubDate>Wed, 04 Mar 2026 13:02:11 +0100</pubDate>
+            
+            <guid>https://david.wilde-ventures.com/posts/fafycat-family-finance-transaction-categorizer/</guid>
+            <description>&lt;p&gt;Every month, same ritual. Export CSV from the bank. Open the spreadsheet. Scroll through 80-odd transactions and manually tag each one: groceries, rent, insurance, that mystery debit from three weeks ago. Copy the numbers into the budget tracker. Close the laptop feeling like I just did someone else&amp;rsquo;s homework.&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;ve been doing this for years. My wife and I track our household spending across maybe 20 categories, because we want to know where the money goes, likely this is a work habit from me to have factual information and not only gut feelings about what&amp;rsquo;s going on.
+And we want to be more deliberate about how we spend our money. The spreadsheet worked. It was just soul-crushingly tedious.&lt;/p&gt;</description>
+            <content type="html"><![CDATA[<p>Every month, same ritual. Export CSV from the bank. Open the spreadsheet. Scroll through 80-odd transactions and manually tag each one: groceries, rent, insurance, that mystery debit from three weeks ago. Copy the numbers into the budget tracker. Close the laptop feeling like I just did someone else&rsquo;s homework.</p>
+<p>I&rsquo;ve been doing this for years. My wife and I track our household spending across maybe 20 categories, because we want to know where the money goes, likely this is a work habit from me to have factual information and not only gut feelings about what&rsquo;s going on.
+And we want to be more deliberate about how we spend our money. The spreadsheet worked. It was just soul-crushingly tedious.</p>
+<h2 id="why-not-just-use-an-app">Why not just use an app?</h2>
+<p>The obvious answer is: use Finanzguru, or Copilot, or YNAB. I tried. None of them stuck, and the reasons were always the same.</p>
+<p><strong>Privacy.</strong> Most of these tools want your banking credentials or connect through aggregators like Plaid. I work in cybersecurity. I spend my days developing ML solutions to detect breaches. The idea of handing my family&rsquo;s financial data to a third-party aggregator makes my eye twitch. Call it professional paranoia&ndash;I call it informed consent.</p>
+<p><strong>German banking quirks.</strong> Transaction descriptions from German banks are their own special language. A &ldquo;Lastschrift&rdquo; with a purpose field stuffed with SEPA reference numbers, merchant IDs, and truncated business names doesn&rsquo;t parse cleanly with tools built for Chase or Bank of America. The Purpose field alone can be a wall of text that most categorization engines choke on.</p>
+<p><strong>Intelligence without the cloud.</strong> I wanted something that could <em>learn</em> from my corrections. Not a static rule engine, not a cloud AI that phones home with every transaction, a model that runs locally, improves over time, and never sends my data anywhere.</p>
+<p>Nothing on the market hit all three. So I built it.</p>
+<h2 id="the-build">The build</h2>
+<p>I kept the stack deliberately boring. Python, Streamlit for the UI, LightGBM for the ML model, SQLite for storage. No microservices, no containers for the MVP, no separate API layer. Streamlit handles everything in one process. The KISS principle, applied aggressively.</p>
+<p>The ML pipeline is straightforward: TF-IDF on transaction text (character n-grams work surprisingly well for German merchant names), a few engineered features like amount ranges and day-of-month patterns, and a LightGBM classifier. Before the model even runs, there&rsquo;s a merchant memory layer, if I&rsquo;ve categorized &ldquo;REWE MARKT&rdquo; as groceries fifty times, the system just remembers that.</p>
+<p>The interesting part was using AI-assisted development to build it. I started with Windsurf (Cursor&rsquo;s competitor) for the initial prototype, then switched to Claude Code for the heavy lifting. I tracked the API costs as I went:</p>
+<ul>
+<li>Initial working prototype: <strong>$3.62</strong></li>
+<li>After first real use and bug fixes: <strong>$6.37</strong></li>
+<li>After substantial refactoring and adding the analytics dashboard: <strong>&gt;$33</strong></li>
+</ul>
+<p>That&rsquo;s the total development cost for a working, deployed application, a tool I now use every month. The experience of iterating with Claude Code was good enough that I ditched Windsurf and Cursor entirely and upgraded to the Max subscription.</p>
+<h2 id="what-i-learned">What I learned</h2>
+<p><strong>Traditional ML beats LLMs for this task.</strong> This was the biggest surprise, and it deserves its own blog post (coming soon). The short version: with ~2,000-3,000 labeled transactions, a well-tuned LightGBM model with good feature engineering hits classification accuracy that an LLM can&rsquo;t match for this specific domain — and it runs in milliseconds, not seconds. When you&rsquo;re reviewing 80 transactions and want instant predictions as you correct mistakes, latency matters more than raw capability.</p>
+<p><strong>Ship ugly, ship fast.</strong> The first version of the UI was rough. Streamlit imposes real constraints on layout and interactivity. But it <em>worked</em>. I could import a CSV, get predictions, correct the wrong ones, and export the result in under ten minutes instead of an hour. That&rsquo;s the bar. Everything else is polish.</p>
+<p><strong>AI tools change the economics of side projects.</strong> The $33 I spent on Claude Code API calls replaced what would have been weeks of evenings building the Streamlit frontend, the analytics dashboard, the data pipeline. For a working parent with limited coding time, this is transformative. It doesn&rsquo;t write the code for you (you still need to know what you&rsquo;re building and why) but it compresses the tedious parts dramatically.</p>
+<h2 id="open-sourcing-it">Open-sourcing it</h2>
+<p>I released the web app under the <a href="https://github.com/davidchris/fafycat">Apache License 2.0 on GitHub</a>. The repo contains everything: the ML pipeline, the web app, sample data simulations for testing, and documentation to get started.</p>
+<p>Why open-source it? Partly because I benefited from countless open-source tools building it. Partly because the privacy-first approach only works if people can verify the code actually stays local. And partly because I suspect other German-speaking households have the same spreadsheet problem I did.</p>
+<p>A few caveats: this is a tool I built for my family&rsquo;s workflow. It&rsquo;s opinionated about CSV formats (German banks first), it assumes a specific category hierarchy, and the UI reflects my priorities, not a product designer&rsquo;s vision. It works well for what it does. It won&rsquo;t win any design awards.</p>
+<h2 id="whats-next">What&rsquo;s next</h2>
+<p>I&rsquo;m exploring an Apple-native desktop app direction — SwiftUI with CoreML for on-device inference. The idea is to convert the LightGBM model to CoreML format and ship something that runs entirely on your Mac without needing Python installed. Privacy-first finance tooling for the Apple ecosystem, where &ldquo;your data never leaves your device&rdquo; isn&rsquo;t marketing copy but a technical guarantee.</p>
+<p>That&rsquo;s a bigger project, and it&rsquo;s still in the planning phase. The open-source web-app version isn&rsquo;t going anywhere.</p>
+<p>If you&rsquo;re interested in the technical details: why LightGBM outperforms an LLM for transaction categorization, how the feature engineering works for German bank data, the model retraining loop; I&rsquo;ll cover all of that in a follow-up post.</p>
+<p>For now, you can find <a href="https://github.com/davidchris/fafycat">FafyCat on GitHub</a>. Try it, break it, tell me what you think.</p>
+]]></content>
+        </item>
         
         <item>
             <title>On AI and Fears About the Future</title>
             <link>https://david.wilde-ventures.com/posts/on-ai-and-fears-about-the-future/</link>
-            <pubDate>Sun, 30 Jul 2023 16:53:13 +0200</pubDate>
+            <pubDate>Sun, 30 Jul 2023 16:53:00 +0200</pubDate>
             
             <guid>https://david.wilde-ventures.com/posts/on-ai-and-fears-about-the-future/</guid>
-            <description>Preamble My thoughts are inspired by listening to Lex Fridman’s podcast episode with Yuval Noah Harari1. I really enjoyed listening to it, it was inspiring to me, thought provoking. Some arguments he made in the interview I don&amp;rsquo;t fully subscribe to. I try to write down my thoughts about them here.
-Roughly paraphrased I understood Harari’s point on future risks of AI2 as follows:
-AI is a new type of tool: it can make decisions on its own and generate ideas on its own AI will likely understand us (humans) very well, but we don’t understand it AI and bio-engineering might be used to induce change in humans to serve the nefarious ends of powerful, authoritarian regimes To point 3 - Technology Misuse I agree.</description>
+            <description>&lt;h2 id=&#34;preamble&#34;&gt;Preamble&lt;/h2&gt;
+&lt;p&gt;My thoughts are inspired by listening to Lex Fridman&amp;rsquo;s podcast episode with Yuval Noah Harari&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;. I really enjoyed listening to it, it was inspiring to me, thought provoking. Some arguments he made in the interview I don&amp;rsquo;t fully subscribe to. I try to write down my thoughts about them here.&lt;/p&gt;
+&lt;p&gt;Roughly paraphrased I understood Harari&amp;rsquo;s point on future risks of AI&lt;sup id=&#34;fnref:2&#34;&gt;&lt;a href=&#34;#fn:2&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;2&lt;/a&gt;&lt;/sup&gt; as follows:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;AI is a new type of tool: it can make decisions on its own and generate ideas on its own&lt;/li&gt;
+&lt;li&gt;AI will likely understand us (humans) very well, but we don&amp;rsquo;t understand it&lt;/li&gt;
+&lt;li&gt;AI and bio-engineering might be used to induce change in humans to serve the nefarious ends of powerful, authoritarian regimes&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;to-point-3---technology-misuse&#34;&gt;To point 3 - Technology Misuse&lt;/h2&gt;
+&lt;p&gt;I agree. It sounds plausible to me that once the technology is available to gain an advantage, i.e. move closer to ones goals, it will be used in that way. Humans use them for &amp;ldquo;good&amp;rdquo; and for &amp;ldquo;evil&amp;rdquo;. As an example: 1) AlphaFold from DeepMind is speeding up biology research to a new degree. 2) With the availability of crypto currencies and their ease of sending money via uncontrolled channels, cyber criminals had a hay day (see the influx of ransom ware attacks in the past 5 years). Similarly, we might observe how the generative text capabilities of large language models will be used to generate scam and phishing campaigns that will appear more authentic.&lt;/p&gt;</description>
             <content type="html"><![CDATA[<h2 id="preamble">Preamble</h2>
-<p>My thoughts are inspired by listening to Lex Fridman’s podcast episode with Yuval Noah Harari<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.
-I really enjoyed listening to it, it was inspiring to me, thought provoking.
-Some arguments he made in the interview I don&rsquo;t fully subscribe to. I try to write down my thoughts about them here.</p>
-<p>Roughly paraphrased I understood Harari’s point on future risks of AI<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>  as follows:</p>
-<ol>
+<p>My thoughts are inspired by listening to Lex Fridman&rsquo;s podcast episode with Yuval Noah Harari<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. I really enjoyed listening to it, it was inspiring to me, thought provoking. Some arguments he made in the interview I don&rsquo;t fully subscribe to. I try to write down my thoughts about them here.</p>
+<p>Roughly paraphrased I understood Harari&rsquo;s point on future risks of AI<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> as follows:</p>
+<ul>
 <li>AI is a new type of tool: it can make decisions on its own and generate ideas on its own</li>
-<li>AI will likely understand us (humans) very well, but we don’t understand it</li>
+<li>AI will likely understand us (humans) very well, but we don&rsquo;t understand it</li>
 <li>AI and bio-engineering might be used to induce change in humans to serve the nefarious ends of powerful, authoritarian regimes</li>
-</ol>
+</ul>
 <h2 id="to-point-3---technology-misuse">To point 3 - Technology Misuse</h2>
-<p>I agree. It sounds plausible to me that once the technology is available to gain an advantage, i.e. move closer to ones goals, it will be used in that way.
-Humans use them for “good” and for “evil”. As an example: 1) AlphaFold from DeepMind is speeding up biology research to a new degree.
-2) With the availability of crypto currencies and their ease of sending money via uncontrolled channels, cyber criminals had a hay day (see the influx of ransom ware attacks in the past 5 years).
-Similarly, we might observe how the generative text capabilities of large language models will be used to generate scam and phishing campaigns that will appear more authentic.</p>
-<p>I cannot and don’t want to forecast a trend how this might evolve with more capable technology.
-All I can see from my perspective, with my work experience in detecting malicious behavior in the digital domain, is that there always has been a cat and mouse game.
-Sometimes the mouse scored a lot of cheese before the cat could figure out the tactics to catch it, but the cat never starved.
-Therefore, while I see Harari’s concerns I am vaguely optimistic that we will figure out ways to cope with it.</p>
+<p>I agree. It sounds plausible to me that once the technology is available to gain an advantage, i.e. move closer to ones goals, it will be used in that way. Humans use them for &ldquo;good&rdquo; and for &ldquo;evil&rdquo;. As an example: 1) AlphaFold from DeepMind is speeding up biology research to a new degree. 2) With the availability of crypto currencies and their ease of sending money via uncontrolled channels, cyber criminals had a hay day (see the influx of ransom ware attacks in the past 5 years). Similarly, we might observe how the generative text capabilities of large language models will be used to generate scam and phishing campaigns that will appear more authentic.</p>
+<p>I cannot and don&rsquo;t want to forecast a trend how this might evolve with more capable technology. All I can see from my perspective, with my work experience in detecting malicious behavior in the digital domain, is that there always has been a cat and mouse game. Sometimes the mouse scored a lot of cheese before the cat could figure out the tactics to catch it, but the cat never starved. Therefore, while I see Harari&rsquo;s concerns I am vaguely optimistic that we will figure out ways to cope with it.</p>
 <h2 id="to-point-2---understanding">To point 2 - Understanding</h2>
-<p>I am not sure what “breed” of AI Harari imagined in this interview. From my understanding no model is able to understand humans to the extent to manipulate them with intent.
-It is true that we don’t know in detail how large language models gain their capability and generate their output after being trained on large quantities of text.</p>
-<p>Where manipulation takes place, I’d argue, is in recommendation engines. Prominent examples are the systems that fill the feeds of Facebook, Twitter and YouTube.
-On a high level, here the systems are fed with user interaction data and set to predict certain desired outcomes, coupled with an optimization function.
-The manipulations comes from the desired target metric during the training of these systems. Not all aspects of that manipulation (one could also call it nudging or recommending in most cases) are intentional.
-This is because it is difficult to think the implication and effects of these systems through to the nth-degree.
-The reason for that lies in the complexity of the problem.
-The creators of these system have a goal in their mind and have to assume that the data they collect and the target they set will achieve that goal.
-The relationship between the training data, the target and the goal is not linear, not trivial, because it involves human behavior—in groups,
-not even just individual (if I learned one thing from my undergrad in economics its that we are really bad at predicting group interactions).
-One cannot think through this problem and come up with an equation to solve it, not at least with a proper serving of uncertainty.</p>
-<p>That is why ML algorithms, equations that adjust parameters based on training data and an objective, are useful.
-With ML as a tool, there is no need to develop a theory and deduce a model from it. Instead it is a practical exercise to train the system, see where it fails and adapt from there.
-This exploratory approach brings along the fact that the map of its unintended side effects is incomplete.</p>
-<p>ML systems do the thing they were trained to do.
-And as with all types of computer behavior, the computer follows what the human told it to do to the word, even if the human meant it another way.
-These large language models don’t understand us the same way a good therapist would.
-They detect patterns and act according to their training.</p>
+<p>I am not sure what &ldquo;breed&rdquo; of AI Harari imagined in this interview. From my understanding no model is able to understand humans to the extent to manipulate them with intent. It is true that we don&rsquo;t know in detail how large language models gain their capability and generate their output after being trained on large quantities of text.</p>
+<p>Where manipulation takes place, I&rsquo;d argue, is in recommendation engines. Prominent examples are the systems that fill the feeds of Facebook, Twitter and YouTube. On a high level, here the systems are fed with user interaction data and set to predict certain desired outcomes, coupled with an optimization function. The manipulations comes from the desired target metric during the training of these systems. Not all aspects of that manipulation (one could also call it nudging or recommending in most cases) are intentional. This is because it is difficult to think the implication and effects of these systems through to the nth-degree. The reason for that lies in the complexity of the problem. The creators of these system have a goal in their mind and have to assume that the data they collect and the target they set will achieve that goal. The relationship between the training data, the target and the goal is not linear, not trivial, because it involves human behavior—in groups, not even just individual (if I learned one thing from my undergrad in economics its that we are really bad at predicting group interactions). One cannot think through this problem and come up with an equation to solve it, not at least with a proper serving of uncertainty.</p>
+<p>That is why ML algorithms, equations that adjust parameters based on training data and an objective, are useful. With ML as a tool, there is no need to develop a theory and deduce a model from it. Instead it is a practical exercise to train the system, see where it fails and adapt from there. This exploratory approach brings along the fact that the map of its unintended side effects is incomplete.</p>
+<p>ML systems do the thing they were trained to do. And as with all types of computer behavior, the computer follows what the human told it to do to the word, even if the human meant it another way. These large language models don&rsquo;t understand us the same way a good therapist would. They detect patterns and act according to their training.</p>
 <h2 id="to-point-1---decisions-and-ideas">To point 1 - Decisions and Ideas</h2>
 <p>Again, I am not sure what Harari meant here.</p>
 <h3 id="decision-systems">Decision Systems</h3>
-<p>Rule-based decision system were making decisions by themselves even before a wide adoption of ML systems in the domains he mentioned, credit and loan scoring.
-ML systems are in most cases better at that than hand-written rules.</p>
-<p>I will now assume for the sake of argument that Harari meant that “AI” systems would follow their own agenda and base their decisions on that.
-In that case I don’t know of evidence today that “AI” systems are capable of that.
-The agenda, i.e. objective or target, of those systems today is set by humans.
-As described in “to point two”: ML systems fall to their level of training.</p>
+<p>Rule-based decision system were making decisions by themselves even before a wide adoption of ML systems in the domains he mentioned, credit and loan scoring. ML systems are in most cases better at that than hand-written rules.</p>
+<p>I will now assume for the sake of argument that Harari meant that &ldquo;AI&rdquo; systems would follow their own agenda and base their decisions on that. In that case I don&rsquo;t know of evidence today that &ldquo;AI&rdquo; systems are capable of that. The agenda, i.e. objective or target, of those systems today is set by humans. As described in &ldquo;to point two&rdquo;: ML systems fall to their level of training.</p>
 <h3 id="idea-generation-is-different">Idea generation is different</h3>
-<p>A decision system backed by rules or a trained ML model for the application of credit scoring does not generate ideas.
-Even with large language models I’d say they are rehashing what they’ve learned and are not generating truly new ideas.
-But then comes the whole debate if humans are any different.</p>
-<p>An example in the other direction could be AlphaFold.
-When it discovers new protein structures can one describe that as a new idea? Papers where written by humans before on such discoveries.
-I have a hard time to draw the analogy to systems like GPT-4.
-AlphaFold was specifically designed to do that and is in essence exploring the space of possible protein structure.
-We can generate new discoveries more efficiently than with the tools before.
-However, are all idea discoveries exploration of some space? I don’t know.
-I feel this question is out of my area of expertise; might need to ask a psychologist and philosopher about that.</p>
-<p>Nevertheless, I’m skeptic and hesitant to describe LLMs as they are today as idea generators.</p>
+<p>A decision system backed by rules or a trained ML model for the application of credit scoring does not generate ideas. Even with large language models I&rsquo;d say they are rehashing what they&rsquo;ve learned and are not generating truly new ideas. But then comes the whole debate if humans are any different.</p>
+<p>An example in the other direction could be AlphaFold. When it discovers new protein structures can one describe that as a new idea? Papers where written by humans before on such discoveries. I have a hard time to draw the analogy to systems like GPT-4. AlphaFold was specifically designed to do that and is in essence exploring the space of possible protein structure. We can generate new discoveries more efficiently than with the tools before. However, are all idea discoveries exploration of some space? I don&rsquo;t know. I feel this question is out of my area of expertise; might need to ask a psychologist and philosopher about that.</p>
+<p>Nevertheless, I&rsquo;m skeptic and hesitant to describe LLMs as they are today as idea generators.</p>
 <div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
@@ -94,61 +111,20 @@ I feel this question is out of my area of expertise; might need to ask a psychol
         <item>
             <title>My Issue With LLM in Programming</title>
             <link>https://david.wilde-ventures.com/posts/my-issue-with-llm-in-programming/</link>
-            <pubDate>Wed, 22 Mar 2023 09:31:06 +0100</pubDate>
+            <pubDate>Wed, 22 Mar 2023 00:00:00 +0000</pubDate>
             
             <guid>https://david.wilde-ventures.com/posts/my-issue-with-llm-in-programming/</guid>
-            <description>There are organizations (example, nothing in particular about this Org, I stumbled over their blog post recently, which inspired the thoughts below) trying to build LLM-based systems that can program. In the example posted above they describe the difficulties with LLM and accessing real-word applications like databases.
-The main issue that exists is hallucination. LLMs can write SQL, but they are often prone to making up tables, making up fields, and generally just writing SQL that if executed against your database would not actually be valid.</description>
-            <content type="html"><![CDATA[<p>There are organizations (<a href="https://blog.langchain.dev/llms-and-sql/">example</a>,
-nothing in particular about this Org, I stumbled over their blog post recently,
-which inspired the thoughts below) trying to build LLM-based systems that can
-program. In the example posted above they describe the difficulties with LLM
-and accessing real-word applications like databases.</p>
+            <description>&lt;p&gt;There are organizations (&lt;a href=&#34;https://www.numbersstation.ai/post/fine-tuning-a-gpt-llm-to-sql-for-enterprise-use-cases&#34;&gt;example&lt;/a&gt;, nothing in particular about this Org, I stumbled over their blog post recently, which inspired the thoughts below) trying to build LLM-based systems that can program. In the example posted above they describe the difficulties with LLM and accessing real-word applications like databases.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The main issue that exists is hallucination. LLMs can write SQL, but they are often prone to making up tables, making up fields, and generally just writing SQL that if executed against your database would not actually be valid. So one of the big challenges we face is how to ground the LLM in reality so that it produces valid SQL. The main idea to fix this (we will go into more detail below) is to provide the LLM with knowledge about what actually exists in the database and tell it to write a SQL query consistent with that. However, this runs into a second issue - the context window length. LLMs have some context window which limits the amount of text they can operate over. This is relevant because SQL databases often contain a lot of information. So if we were to naively pass in all the data to ground the LLM in reality, we would likely run into this issue. A third issue is a more basic one: sometimes the LLM just messes up. The SQL it writes may be incorrect for whatever reason, or it could be correct but just return an unexpected result. What do we do then? Do we give up?&lt;/p&gt;</description>
+            <content type="html"><![CDATA[<p>There are organizations (<a href="https://www.numbersstation.ai/post/fine-tuning-a-gpt-llm-to-sql-for-enterprise-use-cases">example</a>, nothing in particular about this Org, I stumbled over their blog post recently, which inspired the thoughts below) trying to build LLM-based systems that can program. In the example posted above they describe the difficulties with LLM and accessing real-word applications like databases.</p>
 <blockquote>
-<p>The main issue that exists is hallucination. LLMs can write SQL, but they are
-often prone to making up tables, making up fields, and generally just writing
-SQL that if executed against your database would not actually be valid. So
-one of the big challenges we face is how to ground the LLM in reality so that
-it produces valid SQL. The main idea to fix this (we will go into more detail
-below) is to provide the LLM with knowledge about what actually exists in the
-database and tell it to write a SQL query consistent with that. However, this
-runs into a second issue - the context window length. LLMs have some context
-window which limits the amount of text they can operate over. This is
-relevant because SQL databases often contain a lot of information. So if we
-were to naively pass in all the data to ground the LLM in reality, we would
-likely run into this issue. A third issue is a more basic one: sometimes the
-LLM just messes up. The SQL it writes may be incorrect for whatever reason,
-or it could be correct but just return an unexpected result. What do we do
-then? Do we give up?</p>
+<p>The main issue that exists is hallucination. LLMs can write SQL, but they are often prone to making up tables, making up fields, and generally just writing SQL that if executed against your database would not actually be valid. So one of the big challenges we face is how to ground the LLM in reality so that it produces valid SQL. The main idea to fix this (we will go into more detail below) is to provide the LLM with knowledge about what actually exists in the database and tell it to write a SQL query consistent with that. However, this runs into a second issue - the context window length. LLMs have some context window which limits the amount of text they can operate over. This is relevant because SQL databases often contain a lot of information. So if we were to naively pass in all the data to ground the LLM in reality, we would likely run into this issue. A third issue is a more basic one: sometimes the LLM just messes up. The SQL it writes may be incorrect for whatever reason, or it could be correct but just return an unexpected result. What do we do then? Do we give up?</p>
 </blockquote>
-<p><a href="https://blog.langchain.dev/llms-and-sql/">Source</a></p>
-<p>Without being able to prove it, I think that we cannot simply let LLMs write
-the entire script. Programming languages (counting SQL as one in this case) are
-structured, filled with rules and require precision. LLMs cannot provide that
-100% of the time.</p>
-<p>There is the argument that humans can’t do it either, and to this I’d respond
-that first, a human can self-check if the code they are writing is working and
-second, someone else needs to prove-read and try out that code. Or, we want to
-live dangerously and push straight to production without tests and reviews.</p>
-<p>The next argument pro-LLM use is that it should augment the human. Yes, I
-agree, but nothing I’ve seen so far comes close to a good integration. What, in
-my opinion, would be helpful is to have a LLM system be at the the stage in the
-UX as linters and static code checkers. This would require LLMs to be much more
-dependable and not like a junior dev. Example: Pylint is great at telling me
-where and how my Python code violates its rules. Sometimes it even suggests a
-fix. Pylint was built by humans, agreeing on these rules. Now imaging a
-LLM-based refactoring assistant that could suggest improvements towards
-clean-code and higher performance and is tied to certain rules. In this case I
-want to avoid halucinations. As a developer I don’t need another source of
-uncertain suggestions, my brain is likely providing enough of those.</p>
-<p>The longer I think about it, the more I think the hopes, visions and goals we
-base on the current capabilities of LLMs don’t stand on robust ground. LLMs
-have capabilities and we don’t understand their extent. We don’t know their
-failure modes and where we can trust them. For all that more research is
-required. This can take the form of companies integrating them and failing and
-of academics methodically figuring them out. But as a business that has no
-expertise and willingness to dive deep into LLMs, I would not go that route and
-rather build/use proven, boring software.</p>
+<p>Without being able to prove it, I think that we cannot simply let LLMs write the entire script. Programming languages (counting SQL as one in this case) are structured, filled with rules and require precision. LLMs cannot provide that 100% of the time.</p>
+<p>There is the argument that humans can&rsquo;t do it either, and to this I&rsquo;d respond that first, a human can self-check if the code they are writing is working and second, someone else needs to prove-read and try out that code. Or, we want to live dangerously and push straight to production without tests and reviews.</p>
+<p>The next argument pro-LLM use is that it should augment the human. Yes, I agree, but nothing I&rsquo;ve seen so far comes close to a good integration. What, in my opinion, would be helpful is to have a LLM system be at the the stage in the UX as linters and static code checkers. This would require LLMs to be much more dependable and not like a junior dev. Example: Pylint is great at telling me where and how my Python code violates its rules. Sometimes it even suggests a fix. Pylint was built by humans, agreeing on these rules. Now imaging a LLM-based refactoring assistant that could suggest improvements towards clean-code and higher performance and is tied to certain rules. In this case I want to avoid halucinations. As a developer I don&rsquo;t need another source of uncertain suggestions, my brain is likely providing enough of those.</p>
+<p>The longer I think about it, the more I think the hopes, visions and goals we base on the current capabilities of LLMs don&rsquo;t stand on robust ground. LLMs have capabilities and we don&rsquo;t understand their extent. We don&rsquo;t know their failure modes and where we can trust them. For all that more research is required. This can take the form of companies integrating them and failing and of academics methodically figuring them out. But as a business that has no expertise and willingness to dive deep into LLMs, I would not go that route and rather build/use proven, boring software.</p>
 ]]></content>
         </item>
         
@@ -158,10 +134,12 @@ rather build/use proven, boring software.</p>
             <pubDate>Tue, 10 Aug 2021 20:15:20 +0200</pubDate>
             
             <guid>https://david.wilde-ventures.com/posts/writing-julia-code-examples-scft/</guid>
-            <description>Inspired Tinkering I attended the Real World Risk Institute Seminar (iteration 15) earlier in 2021 and simultaneously started visiting the global reading club meetup of Nassim Nicholas Taleb&amp;rsquo;s first book of the technical Incerto series: &amp;ldquo;Statistical Consequences of Fat Tails&amp;rdquo;.
-Among other things both events inspired me to &amp;ldquo;code-up&amp;rdquo; statistical examples, using the Julia language.
-The first example can be seen here, and code can be checked-out here.
-My current plan&amp;ndash;undoubtedly changing in the future&amp;ndash;is to add these examples to this repository</description>
+            <description>&lt;h2 id=&#34;inspired-tinkering&#34;&gt;Inspired Tinkering&lt;/h2&gt;
+&lt;p&gt;I attended the &lt;a href=&#34;https://realworldrisk.com&#34;&gt;&lt;em&gt;Real World Risk Institute&lt;/em&gt; Seminar&lt;/a&gt; (iteration 15) earlier in 2021 and simultaneously started visiting the &lt;a href=&#34;https://www.meetup.com/de-DE/global-technical-incerto-reading-club/&#34;&gt;global reading club meetup&lt;/a&gt; of Nassim Nicholas Taleb&amp;rsquo;s first book of the technical Incerto series: &lt;a href=&#34;https://arxiv.org/abs/2001.10488&#34;&gt;&amp;ldquo;Statistical Consequences of Fat Tails&amp;rdquo;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Among other things both events inspired me to &amp;ldquo;code-up&amp;rdquo; statistical examples, using the &lt;a href=&#34;https://arxiv.org/abs/2001.10488&#34;&gt;Julia language&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The first example can be seen &lt;a href=&#34;https://david.wilde-ventures.com/SCFT/chapter04_01.html&#34;&gt;here&lt;/a&gt;,
+and code can be checked-out &lt;a href=&#34;https://github.com/davidchris/RWRI15Tinkering.jl/blob/main/src/SCFT-examples/chapter_04.jl&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;My current plan&amp;ndash;undoubtedly changing in the future&amp;ndash;is to add these examples to this &lt;a href=&#34;https://github.com/davidchris/RWRI15Tinkering.jl&#34;&gt;repository&lt;/a&gt;&lt;/p&gt;</description>
             <content type="html"><![CDATA[<h2 id="inspired-tinkering">Inspired Tinkering</h2>
 <p>I attended the <a href="https://realworldrisk.com"><em>Real World Risk Institute</em> Seminar</a> (iteration 15) earlier in 2021 and simultaneously started visiting the <a href="https://www.meetup.com/de-DE/global-technical-incerto-reading-club/">global reading club meetup</a> of Nassim Nicholas Taleb&rsquo;s first book of the technical Incerto series: <a href="https://arxiv.org/abs/2001.10488">&ldquo;Statistical Consequences of Fat Tails&rdquo;</a>.</p>
 <p>Among other things both events inspired me to &ldquo;code-up&rdquo; statistical examples, using the <a href="https://arxiv.org/abs/2001.10488">Julia language</a>.</p>
@@ -179,9 +157,15 @@ and code can be checked-out <a href="https://github.com/davidchris/RWRI15Tinkeri
             <pubDate>Mon, 25 May 2020 09:10:55 +0000</pubDate>
             
             <guid>https://david.wilde-ventures.com/posts/creating-this-website/</guid>
-            <description>This is the start of my personal website. And instead of writing some generic, somewhat empty first post saying &amp;lsquo;Hello World!&amp;rsquo;. I instead want to write about how I created this website. Foremost as a tutorial for myself.
-Static Site Generation I went with Hugo, after some research online:
-You could all build it by yourself Jekyll, generates html with themes from markdown, runs locally, well integrated with GitHub, written in Ruby (I think) Hugo, fast, works everywhere, easy to use, written in Go And yes, it&amp;rsquo;s fast and easy to use.</description>
+            <description>&lt;p&gt;This is the start of my personal website. And instead of writing some generic, somewhat empty first post saying &amp;lsquo;Hello World!&amp;rsquo;. I instead want to write about how I created this website. Foremost as a tutorial for myself.&lt;/p&gt;
+&lt;h2 id=&#34;static-site-generation&#34;&gt;Static Site Generation&lt;/h2&gt;
+&lt;p&gt;I went with Hugo, after some research online:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;You could all build it by yourself&lt;/li&gt;
+&lt;li&gt;Jekyll, generates html with themes from markdown, runs locally, well integrated with GitHub, written in Ruby (I think)&lt;/li&gt;
+&lt;li&gt;Hugo, fast, works everywhere, easy to use, written in Go&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;And yes, it&amp;rsquo;s fast and easy to use. I rebuild my website from scratch several times one day and there was no hustle. Utilizing one of the many themes available (&lt;a href=&#34;https://themes.gohugo.io&#34;&gt;Hugo Themes&lt;/a&gt;) is also straight forward.&lt;/p&gt;</description>
             <content type="html"><![CDATA[<p>This is the start of my personal website. And instead of writing some generic, somewhat empty first post saying &lsquo;Hello World!&rsquo;. I instead want to write about how I created this website. Foremost as a tutorial for myself.</p>
 <h2 id="static-site-generation">Static Site Generation</h2>
 <p>I went with Hugo, after some research online:</p>

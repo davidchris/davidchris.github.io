@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>machine-learning on David Wilde</title>
+    <title>Machine-Learning on David Wilde</title>
     <link>https://david.wilde-ventures.com/tags/machine-learning/</link>
-    <description>Recent content in machine-learning on David Wilde</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
+    <description>Recent content in Machine-Learning on David Wilde</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sun, 30 Jul 2023 16:53:13 +0200</lastBuildDate><atom:link href="https://david.wilde-ventures.com/tags/machine-learning/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 30 Jul 2023 16:53:00 +0200</lastBuildDate>
+    <atom:link href="https://david.wilde-ventures.com/tags/machine-learning/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>On AI and Fears About the Future</title>
       <link>https://david.wilde-ventures.com/posts/on-ai-and-fears-about-the-future/</link>
-      <pubDate>Sun, 30 Jul 2023 16:53:13 +0200</pubDate>
-      
+      <pubDate>Sun, 30 Jul 2023 16:53:00 +0200</pubDate>
       <guid>https://david.wilde-ventures.com/posts/on-ai-and-fears-about-the-future/</guid>
-      <description>Preamble My thoughts are inspired by listening to Lex Fridman’s podcast episode with Yuval Noah Harari1. I really enjoyed listening to it, it was inspiring to me, thought provoking. Some arguments he made in the interview I don&amp;rsquo;t fully subscribe to. I try to write down my thoughts about them here.
-Roughly paraphrased I understood Harari’s point on future risks of AI2 as follows:
-AI is a new type of tool: it can make decisions on its own and generate ideas on its own AI will likely understand us (humans) very well, but we don’t understand it AI and bio-engineering might be used to induce change in humans to serve the nefarious ends of powerful, authoritarian regimes To point 3 - Technology Misuse I agree.</description>
+      <description>&lt;h2 id=&#34;preamble&#34;&gt;Preamble&lt;/h2&gt;&#xA;&lt;p&gt;My thoughts are inspired by listening to Lex Fridman&amp;rsquo;s podcast episode with Yuval Noah Harari&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;. I really enjoyed listening to it, it was inspiring to me, thought provoking. Some arguments he made in the interview I don&amp;rsquo;t fully subscribe to. I try to write down my thoughts about them here.&lt;/p&gt;&#xA;&lt;p&gt;Roughly paraphrased I understood Harari&amp;rsquo;s point on future risks of AI&lt;sup id=&#34;fnref:2&#34;&gt;&lt;a href=&#34;#fn:2&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;2&lt;/a&gt;&lt;/sup&gt; as follows:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;AI is a new type of tool: it can make decisions on its own and generate ideas on its own&lt;/li&gt;&#xA;&lt;li&gt;AI will likely understand us (humans) very well, but we don&amp;rsquo;t understand it&lt;/li&gt;&#xA;&lt;li&gt;AI and bio-engineering might be used to induce change in humans to serve the nefarious ends of powerful, authoritarian regimes&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;to-point-3---technology-misuse&#34;&gt;To point 3 - Technology Misuse&lt;/h2&gt;&#xA;&lt;p&gt;I agree. It sounds plausible to me that once the technology is available to gain an advantage, i.e. move closer to ones goals, it will be used in that way. Humans use them for &amp;ldquo;good&amp;rdquo; and for &amp;ldquo;evil&amp;rdquo;. As an example: 1) AlphaFold from DeepMind is speeding up biology research to a new degree. 2) With the availability of crypto currencies and their ease of sending money via uncontrolled channels, cyber criminals had a hay day (see the influx of ransom ware attacks in the past 5 years). Similarly, we might observe how the generative text capabilities of large language models will be used to generate scam and phishing campaigns that will appear more authentic.&lt;/p&gt;</description>
     </item>
-    
   </channel>
 </rss>
