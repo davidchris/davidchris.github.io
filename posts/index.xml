@@ -6,8 +6,367 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Wed, 04 Mar 2026 13:02:11 +0100</lastBuildDate>
+        <lastBuildDate>Thu, 26 Mar 2026 00:00:00 +0000</lastBuildDate>
         <atom:link href="https://david.wilde-ventures.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Adapting Karpathy&#39;s Autoresearch to Numerai: 358 Experiments Later</title>
+            <link>https://david.wilde-ventures.com/posts/adapting-karpathy-autoresearch-to-numerai/</link>
+            <pubDate>Thu, 26 Mar 2026 00:00:00 +0000</pubDate>
+            
+            <guid>https://david.wilde-ventures.com/posts/adapting-karpathy-autoresearch-to-numerai/</guid>
+            <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt;: I adapted Karpathy&amp;rsquo;s autoresearch to optimize a neural network for the Numerai tournament. 358 autonomous experiments, 22 kept (6% hit rate), payout improved from -0.008 to 0.0280. Key adaptations: era-purged CV, multi-seed validation gates, synthesized learnings after each iteration, and a DO NOT RETRY table to prevent re-exploring exhausted search regions. Biggest surprise: every fancy tabular DL architecture (FT-Transformer, TabNet, GLU, MoE) lost to a plain 3-layer feedforward net with GELU.&lt;/p&gt;</description>
+            <content type="html"><![CDATA[<p><strong>TL;DR</strong>: I adapted Karpathy&rsquo;s autoresearch to optimize a neural network for the Numerai tournament. 358 autonomous experiments, 22 kept (6% hit rate), payout improved from -0.008 to 0.0280. Key adaptations: era-purged CV, multi-seed validation gates, synthesized learnings after each iteration, and a DO NOT RETRY table to prevent re-exploring exhausted search regions. Biggest surprise: every fancy tabular DL architecture (FT-Transformer, TabNet, GLU, MoE) lost to a plain 3-layer feedforward net with GELU.</p>
+<hr>
+<p><img src="/images/autoresearch-numerai/progress.png" alt="Autoresearch Progress: 358 Experiments, 22 Kept Improvements"></p>
+<p>In March 2026, Andrej Karpathy open-sourced <a href="https://github.com/karpathy/autoresearch/">autoresearch</a> — a ~630-line Python tool that lets AI agents run autonomous ML experiments. The concept is elegant: give an LLM a <code>train.py</code> file, a fixed evaluation harness, and a research brief, then let it iterate. Each loop, the agent proposes a code change, trains the model, measures improvement, and commits or reverts. Overnight, you wake up to dozens of experiments and a Git history that reads like a lab notebook.</p>
+<p>I adapted autoresearch to optimize a neural network for the <a href="https://numer.ai">Numerai</a> tournament — a hedge fund competition where participants predict stock returns using anonymized financial features. 358 experiments later, payout improved from -0.008 to 0.0280, and I learned as much about what <em>doesn&rsquo;t</em> work in tabular deep learning as what does.</p>
+<p>This post covers what had to change when moving from language modeling to financial prediction, and what surprised me along the way.</p>
+<h2 id="karpathys-original-design">Karpathy&rsquo;s Original Design</h2>
+<p>The original autoresearch targets <strong>nanochat</strong> — a small character-level language model. The setup is minimal:</p>
+<ul>
+<li><code>prepare.py</code>: Fixed data loading and utilities (human-maintained)</li>
+<li><code>train.py</code>: Editable model code (the agent modifies this)</li>
+<li><code>program.md</code>: Research directions for the agent</li>
+<li><strong>Metric</strong>: <code>val_bpb</code> (validation bits-per-byte) — a single scalar, lower is better</li>
+<li><strong>Budget</strong>: Fixed 5 minutes per experiment</li>
+<li><strong>Loop</strong>: Prompt LLM → modify code → train → measure → commit or revert</li>
+</ul>
+<p>The key insight is that the fixed time budget makes results comparable regardless of hardware, and the single metric makes improvement unambiguous. Shopify&rsquo;s CEO reported a 19% improvement after 37 experiments overnight.</p>
+<h2 id="why-numerai-is-harder">Why Numerai Is Harder</h2>
+<p>Numerai introduces several challenges that don&rsquo;t exist in language modeling:</p>
+<ol>
+<li>
+<p><strong>Composite metric</strong>: Payout isn&rsquo;t just accuracy. It&rsquo;s <code>0.75 * CORR20 + 2.25 * MMC</code>, where MMC (Meta-Model Contribution) measures how much your predictions <em>add</em> to stake-weighted meta model. Being different matters 3x more than being accurate.</p>
+</li>
+<li>
+<p><strong>Time-series structure</strong>: Financial data is grouped into eras — weekly in historical data, daily in the live tournament. Targets are 60-day forward returns, so adjacent eras have overlapping prediction windows. Naive train/val splits leak future information.</p>
+</li>
+<li>
+<p><strong>High noise floor</strong>: Stock returns are inherently noisy. The standard deviation of payout across cross-validation folds is ~0.005, meaning improvements smaller than ~1.3% of baseline are indistinguishable from random variance.</p>
+</li>
+<li>
+<p><strong>Anonymized features</strong>: You can&rsquo;t reason about feature semantics — no &ldquo;price&rdquo;, &ldquo;volume&rdquo;, or &ldquo;momentum&rdquo;. Numerai v5.2 provides 2,748 features total, but we locked the agent to 235 features from the &ldquo;serenity&rdquo; and &ldquo;wisdom&rdquo; subsets (chosen for their high BMC Sharpe ratios) to keep experiment cycle times short. Future autoresearch runs will explore the full feature set.</p>
+</li>
+<li>
+<p><strong>Benchmark orthogonalization</strong>: BMC (Benchmark Model Contribution &ndash; a proxy for MMC) is computed by <em>removing</em> the signal that Numerai&rsquo;s existing LightGBM ensemble already captures. Your neural net must find signal that gradient-boosted trees miss.</p>
+</li>
+</ol>
+<h2 id="dataset-configuration">Dataset Configuration</h2>
+<p>All experiments used Numerai dataset <strong>v5.2</strong> with the following configuration:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Parameter</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Dataset version</td>
+          <td>v5.2</td>
+      </tr>
+      <tr>
+          <td>Training set</td>
+          <td>&ldquo;normaltrain&rdquo; (2.7M rows, 574 eras)</td>
+      </tr>
+      <tr>
+          <td>Features</td>
+          <td>&ldquo;serenity&rdquo; (95) + &ldquo;wisdom&rdquo; (140) = 235 of 2,748 available</td>
+      </tr>
+      <tr>
+          <td>Targets</td>
+          <td>20 target columns with 60-day forward returns (e.g. <code>target_alpha_60</code>, <code>target_bravo_60</code>)</td>
+      </tr>
+      <tr>
+          <td>Scoring target</td>
+          <td><code>target</code> (primary Numerai evaluation target)</td>
+      </tr>
+      <tr>
+          <td>Era downsampling</td>
+          <td>Every 4th era (~143 training eras) for faster iteration</td>
+      </tr>
+      <tr>
+          <td>Validation</td>
+          <td>Last 50 eras held out</td>
+      </tr>
+      <tr>
+          <td>Cross-validation</td>
+          <td>4-fold era-purged CV with 8-era embargo</td>
+      </tr>
+  </tbody>
+</table>
+<p>The <strong>benchmark ensemble</strong> (<code>bm_ensemble</code>) is the mean of all 8 LightGBM benchmark models provided in the v5.2 dataset: <code>v52_lgbm_cyrusd20</code>, <code>v52_lgbm_teager2b20</code>, <code>v52_lgbm_ender20</code>, <code>v52_lgbm_jasper20</code>, and their 60-day variants. This is broader than Numerai&rsquo;s official <a href="https://numer.ai/~benchmark_models">V5_LGBM_CT_BLEND</a> (a 50/50 blend of only Cyrus and Teager), since it also includes Ender and Jasper. BMC is computed by orthogonalizing our model&rsquo;s predictions against this ensemble — any signal the LightGBMs already capture is subtracted out, and only the residual correlation with the target counts.</p>
+<p>The feature subsets and era downsampling were locked in <code>prepare.py</code> as human decisions to keep experiment cycle times under 5 minutes per fold. The agent could modify everything in <code>train.py</code> (architecture, loss, optimizer, regularization) but could not change the data configuration.</p>
+<h2 id="the-10-adaptations">The 10 Adaptations</h2>
+<h3 id="1-composite-evaluation-metric">1. Composite Evaluation Metric</h3>
+<p><strong>Original</strong>: <code>val_bpb</code> — a single loss value from training.</p>
+<p><strong>Adapted</strong>: <code>payout_proxy = 0.75 * mean_corr + 2.25 * mean_bmc</code></p>
+<p>The evaluation function in <code>prepare.py</code> computes per-era Pearson correlation and per-era BMC (via orthogonalization against the benchmark ensemble), averages across eras, then combines them using the live payout formula. This means the agent optimizes for <em>tournament performance</em>, not just model accuracy.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">val_df</span><span class="p">,</span> <span class="n">target_columns</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># Per-era correlation and BMC</span>
+</span></span><span class="line"><span class="cl">    <span class="n">payout_proxy</span> <span class="o">=</span> <span class="mf">0.75</span> <span class="o">*</span> <span class="n">mean_corr</span> <span class="o">+</span> <span class="mf">2.25</span> <span class="o">*</span> <span class="n">mean_bmc</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">{</span><span class="s2">&#34;payout_proxy&#34;</span><span class="p">:</span> <span class="n">payout_proxy</span><span class="p">,</span> <span class="s2">&#34;mean_corr&#34;</span><span class="p">:</span> <span class="n">mean_corr</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;mean_bmc&#34;</span><span class="p">:</span> <span class="n">mean_bmc</span><span class="p">,</span> <span class="s2">&#34;sharpe_bmc&#34;</span><span class="p">:</span> <span class="n">sharpe_bmc</span><span class="p">}</span>
+</span></span></code></pre></div><h3 id="2-era-purged-cross-validation">2. Era-Purged Cross-Validation</h3>
+<p><strong>Original</strong>: Single train/validation split.</p>
+<p><strong>Adapted</strong>: 3-fold era-purged CV with 8-era embargo on each side.</p>
+<p>Because targets are 60-day forward returns, adjacent eras have overlapping prediction windows. A standard k-fold split would leak information. Our CV assigns contiguous era blocks to folds and drops 8 eras on each side of the test block boundary. With weekly eras, that&rsquo;s ~56 days of embargo — close to the 60-day target window. With <code>ERA_DOWNSAMPLE=4</code> (every 4th era for faster iteration), the effective embargo is even wider.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># Era-purged CV: contiguous blocks with embargo</span>
+</span></span><span class="line"><span class="cl"><span class="n">embargo_eras</span> <span class="o">=</span> <span class="mi">8</span>  <span class="c1"># eras on each side of test block</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ~56 days with weekly eras, prevents 60-day target leakage</span>
+</span></span></code></pre></div><p>This is slower (3x training per experiment vs. 1x) but prevents the most dangerous form of overfitting in financial ML. See the <a href="https://forum.numer.ai/t/era-wise-time-series-cross-validation/791">Numerai forum post on era-wise CV</a> for background.</p>
+<h3 id="3-multi-seed-validation-gate">3. Multi-Seed Validation Gate</h3>
+<p><strong>Original</strong>: Single training run determines keep/discard.</p>
+<p><strong>Adapted</strong>: Candidates must pass a 3-seed average validation before being kept.</p>
+<p>Given the high noise floor, a single lucky seed can produce a spurious &ldquo;improvement.&rdquo; When the initial run beats the best, we re-train with seeds 17 and 73 (in addition to the original seed 42) and only keep the result if the 3-seed average exceeds the current best:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Multi-seed validation in run.sh</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> EXTRA_SEED in <span class="m">17</span> 73<span class="p">;</span> <span class="k">do</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">SEED_RESULT</span><span class="o">=</span><span class="k">$(</span>... train_and_evaluate<span class="o">(</span>data, <span class="nv">seed</span><span class="o">=</span><span class="nv">$EXTRA_SEED</span><span class="k">)</span> ...<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">SEED_RESULTS</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$SEED_RESULTS</span><span class="s2"> </span><span class="nv">$SEED_PAYOUT</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">done</span>
+</span></span><span class="line"><span class="cl"><span class="nv">AVG_PAYOUT</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$SEED_RESULTS</span><span class="s2">&#34;</span> <span class="p">|</span> awk <span class="s1">&#39;{s+=$1} END {printf &#34;%.10f&#34;, s/NR}&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Only KEEP if 3-seed average &gt; best</span>
+</span></span></code></pre></div><p>This is critical — without it, the 6% hit rate would likely be much higher but filled with false positives.</p>
+<h3 id="4-domain-specific-research-brief-programmd">4. Domain-Specific Research Brief (<code>program.md</code>)</h3>
+<p><strong>Original</strong>: Generic ML research directions.</p>
+<p><strong>Adapted</strong>: 265-line document encoding Numerai domain knowledge.</p>
+<p>The <code>program.md</code> file teaches the agent about BMC, the payout formula, feature set properties, hardware constraints (M3 Max with Metal backend — no CUDA), and time budgets per fold. The agent needs this context to make intelligent architecture choices. For example, knowing that BMC rewards <em>orthogonality to tree ensembles</em> steers the agent toward architectures that learn non-linear interactions that gradient boosting misses.</p>
+<h3 id="5-knowledge-accumulation-learningsmd">5. Knowledge Accumulation (<code>learnings.md</code>)</h3>
+<p><strong>Original</strong>: No structured knowledge persistence between iterations.</p>
+<p><strong>Adapted</strong>: After every iteration, a second Claude call synthesizes results into a structured learnings file.</p>
+<p>This is the most impactful adaptation. After each experiment, the run loop invokes Claude again with the diff, the result, and the current learnings, asking it to synthesize (not append) observations:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Post-eval analysis in run.sh</span>
+</span></span><span class="line"><span class="cl">claude -p <span class="s2">&#34;You are reviewing autoresearch iteration </span><span class="nv">$i</span><span class="s2">.
+</span></span></span><span class="line"><span class="cl"><span class="s2">Status: </span><span class="nv">$STATUS</span><span class="s2">, payout_proxy: </span><span class="nv">$PAYOUT</span><span class="s2">...
+</span></span></span><span class="line"><span class="cl"><span class="s2">Update learnings.md with structured, synthesized observations.&#34;</span>
+</span></span></code></pre></div><p>The resulting <code>learnings.md</code> is organized by category (architecture, loss, optimizer, regularization, etc.) and distinguishes &ldquo;confidently bad&rdquo; (tried 3x, always worse) from &ldquo;ambiguous&rdquo; (mixed results across seeds). By iteration 358, this file contains the distilled knowledge of every experiment — a compressed search history that prevents the agent from wasting iterations on exhausted directions.</p>
+<h3 id="6-near-miss-analysis">6. Near-Miss Analysis</h3>
+<p><strong>Original</strong>: No feedback on <em>close</em> failures.</p>
+<p><strong>Adapted</strong>: <code>near_misses.py</code> extracts the top 3 discarded experiments closest to beating the current best and feeds their diffs to the agent.</p>
+<p>Near-misses are often more informative than clear failures. A change that achieved 99.5% of the best payout might be one small tweak away from an improvement. By showing the agent <em>what almost worked</em>, we give it a more productive starting point than a blank slate.</p>
+<h3 id="7-phase-based-search-strategy">7. Phase-Based Search Strategy</h3>
+<p><strong>Original</strong>: Uniform search strategy throughout.</p>
+<p><strong>Adapted</strong>: 8 phases that shift from exploration to exploitation to architectural innovation:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Phase</th>
+          <th>Iterations</th>
+          <th>Strategy</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>1-25</td>
+          <td>Single focused changes, explore broadly</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>26-50</td>
+          <td>Combine 2-3 changes, mix near-misses</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>51-75</td>
+          <td>Fundamentally different approaches</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>76-267</td>
+          <td>Exploit best region, small perturbations</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td>268-300</td>
+          <td>Evaluation robustness (multi-seed, 5-fold)</td>
+      </tr>
+      <tr>
+          <td>6</td>
+          <td>301-350</td>
+          <td>Tabular-specific architectures (FT-Transformer, TabNet)</td>
+      </tr>
+      <tr>
+          <td>7</td>
+          <td>351-400</td>
+          <td>Training paradigm shifts (SAM, Manifold Mixup)</td>
+      </tr>
+      <tr>
+          <td>8</td>
+          <td>401+</td>
+          <td>Ensemble diversity for BMC maximization</td>
+      </tr>
+  </tbody>
+</table>
+<p>Each phase is communicated to the agent as part of the prompt, steering its creativity toward the most productive frontier.</p>
+<h3 id="8-plateau-detection">8. Plateau Detection</h3>
+<p><strong>Original</strong>: No mechanism to detect stalled progress.</p>
+<p><strong>Adapted</strong>: After 15 consecutive discards, the agent receives an explicit hint to try fundamentally different approaches.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$CONSECUTIVE_DISCARDS</span><span class="s2">&#34;</span> -ge <span class="m">15</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">PLATEAU_HINT</span><span class="o">=</span><span class="s2">&#34;IMPORTANT: </span><span class="nv">$CONSECUTIVE_DISCARDS</span><span class="s2"> consecutive experiments
+</span></span></span><span class="line"><span class="cl"><span class="s2">    have been discarded. Consider switching to a fundamentally different
+</span></span></span><span class="line"><span class="cl"><span class="s2">    approach or combining near-misses.&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></div><p>Without this, the agent tends to make increasingly marginal changes in the same neighborhood, burning iterations on noise-level variations.</p>
+<h3 id="9-do-not-retry-table">9. DO NOT RETRY Table</h3>
+<p><strong>Original</strong>: The agent tracks what it&rsquo;s tried via Git history, which gets long and hard to parse.</p>
+<p><strong>Adapted</strong>: A structured table in <code>program.md</code> listing 20+ exhaustively searched categories with trial counts.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">| Category | Status | Details |
+</span></span><span class="line"><span class="cl">|---|---|---|
+</span></span><span class="line"><span class="cl">| Feedforward width/depth | EXHAUSTED (15+) | [512,256,128] optimal |
+</span></span><span class="line"><span class="cl">| Activations | EXHAUSTED (10+) | GELU optimal. Swish -35%, Mish -67% |
+</span></span><span class="line"><span class="cl">| Dropout | EXHAUSTED (8) | 0.2 uniform optimal |
+</span></span><span class="line"><span class="cl">| ...20 more categories... |
+</span></span></code></pre></div><p>After <code>learnings.md</code>, this is the second most effective mechanism for preventing wasted iterations. Without it, the agent would repeatedly try dropout 0.15 or Swish activation — changes that have been conclusively ruled out.</p>
+<h3 id="10-production-integration">10. Production Integration</h3>
+<p><strong>Original</strong>: Results stay in the research loop.</p>
+<p><strong>Adapted</strong>: The winning configuration is promoted to a production module (<code>dp32_autoresearch_nn/</code>) that runs in the daily submission pipeline.</p>
+<p>This closes the loop from research to deployment. The best autoresearch iteration&rsquo;s hyperparameters and architecture are copied to a standalone module with <code>--train</code>, <code>--predict</code>, and <code>--submit</code> CLI flags, integrated into the daily submission run.</p>
+<h2 id="results-358-experiments-in-numbers">Results: 358 Experiments in Numbers</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Metric</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Total experiments</td>
+          <td>358</td>
+      </tr>
+      <tr>
+          <td>Kept (improvements)</td>
+          <td>22 (6.1%)</td>
+      </tr>
+      <tr>
+          <td>Discarded</td>
+          <td>308 (86.0%)</td>
+      </tr>
+      <tr>
+          <td>Errors</td>
+          <td>28 (7.8%)</td>
+      </tr>
+      <tr>
+          <td>Starting payout</td>
+          <td>-0.008</td>
+      </tr>
+      <tr>
+          <td>Final payout</td>
+          <td>0.0280</td>
+      </tr>
+      <tr>
+          <td>Categories searched</td>
+          <td>20+</td>
+      </tr>
+      <tr>
+          <td>Hyperparameter axes exhausted</td>
+          <td>All major ones</td>
+      </tr>
+  </tbody>
+</table>
+<p>The 6% hit rate is deceptive — it includes multi-seed validation, which filters out roughly half of initially-promising candidates. Without multi-seed gating, the apparent hit rate would be ~12%, but many of those &ldquo;improvements&rdquo; would be noise.</p>
+<h3 id="key-improvements-over-baseline">Key Improvements Over Baseline</h3>
+<p>The biggest gains came from a few decisive changes:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Change</th>
+          <th>Improvement</th>
+          <th>Iteration</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Pure Pearson correlation loss (drop MAE)</td>
+          <td>+inf (baseline was negative)</td>
+          <td>Early</td>
+      </tr>
+      <tr>
+          <td>GELU activation</td>
+          <td>+13%</td>
+          <td>Early</td>
+      </tr>
+      <tr>
+          <td>Weight decay 0.00012</td>
+          <td>+42%</td>
+          <td>Mid</td>
+      </tr>
+      <tr>
+          <td>Batch size 8192</td>
+          <td>+3%</td>
+          <td>Early</td>
+      </tr>
+      <tr>
+          <td>4-seed prediction ensemble</td>
+          <td>+9%</td>
+          <td>285</td>
+      </tr>
+      <tr>
+          <td>Lookahead optimizer (k=3, alpha=0.55)</td>
+          <td>+1.2%</td>
+          <td>Mid</td>
+      </tr>
+      <tr>
+          <td>Output L2 regularization 2.5e-5</td>
+          <td>+2.4%</td>
+          <td>Mid</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="the-final-architecture">The Final Architecture</h3>
+<pre tabindex="0"><code>[512, 256, 128] GELU + HeUniform initialization
+Dense(use_bias=False) -&gt; BatchNorm -&gt; GELU -&gt; Dropout(0.2)
+Manifold Mixup (alpha=0.4, random hidden layer)
+Learned per-target loss weights (softmax logits, temp=2.0)
+AdamW(lr=0.001, wd=0.00012, clipnorm=1.0) + Lookahead(k=3, alpha=0.55)
+PolynomialDecay (30 epochs, end_lr=0.1x)
+4-seed prediction ensemble (avg predictions from seeds 42, 142, 242, 342)
+40 epochs, batch 8192, patience 8
+</code></pre><p>Remarkably simple. After 358 experiments across transformers, gating mechanisms, mixture-of-experts, and exotic regularizers — a plain feedforward network with batch normalization won.</p>
+<h2 id="surprising-findings">Surprising Findings</h2>
+<h3 id="tabular-deep-learning-architectures-all-failed">Tabular Deep Learning Architectures All Failed</h3>
+<p>This was the biggest surprise. FT-Transformer (the #1 tabular DL method in academic benchmarks) scored -21%. TabNet, GLU layers, DCN-v2, Mixture of Experts — all worse than the simple feedforward baseline. Every structured attention mechanism, every gating variant, every architecture designed specifically for tabular data underperformed three Dense layers with GELU.</p>
+<p><strong>Hypothesis</strong>: With only 235 features (from the locked subset) and ~143K training rows (after era downsampling), the data can&rsquo;t support the parameter overhead of attention mechanisms. Tabular DL benchmarks typically use much larger datasets. This may change when future runs use the full 2,748-feature set. Also, Numerai&rsquo;s pre-normalized [0,1] features may already be in a representation where learned feature embeddings add no value.</p>
+<h3 id="ensemble-diversity-hurts">Ensemble Diversity Hurts</h3>
+<p>The 4-seed prediction ensemble (training 4 identical models with different seeds, averaging predictions) gave a +9% improvement — the single biggest gain after the initial configuration. But every attempt to introduce <em>diversity</em> between the seeds made things worse:</p>
+<ul>
+<li>Per-seed learning rate diversity: noise to -5%</li>
+<li>Per-seed schedule diversity (linear/cosine/sqrt): -4%</li>
+<li>Per-seed architecture diversity: -1% to -2%</li>
+<li>Per-seed dropout diversity: -7%</li>
+<li>NCL diversity penalty: -37%</li>
+<li>Rank-based aggregation: -2%</li>
+</ul>
+<p><strong>The paradox</strong>: Variance reduction through averaging identical models beats all diversity strategies. The optimal ensemble is four copies of the same thing.</p>
+<h3 id="you-cant-exploit-the-benchmark">You Can&rsquo;t Exploit the Benchmark</h3>
+<p>Since BMC measures orthogonal contribution relative to Numerai&rsquo;s LightGBM ensemble, an obvious strategy is to explicitly learn the <em>residual</em> — predict what the benchmark gets wrong. Every attempt failed:</p>
+<ul>
+<li>Residual learning (predict target minus benchmark): -16% to -54%</li>
+<li>BMC as a loss component: -33%</li>
+<li>Stop-gradient on benchmark predictions: -48%</li>
+<li>BMC-aware early stopping: -2%</li>
+</ul>
+<p>The benchmark ensemble is either too noisy to learn from or already captures the learnable signal along that direction. The neural network finds orthogonal signal incidentally, not by trying.</p>
+<h3 id="noise-dominates-everything">Noise Dominates Everything</h3>
+<p>The no-change retest standard deviation is 0.0048. With the best payout at 0.0280, that means improvements below 1.3% of baseline (~0.00036 absolute) are literally indistinguishable from re-running the same code with a different random seed. Many experiments that showed &ldquo;102-104% of best&rdquo; with high fold standard deviation were not reproducible.</p>
+<p>This is the fundamental challenge of financial ML — and why the multi-seed validation gate and DO NOT RETRY table are not just nice-to-haves but essential infrastructure.</p>
+<h2 id="what-worked-about-the-approach">What Worked About the Approach</h2>
+<p><strong>Knowledge accumulation is the killer feature.</strong> The <code>learnings.md</code> synthesis after each iteration means the agent gets smarter over time. By iteration 300, the agent has internalized which regions of the search space are exhausted and can focus on genuinely novel directions. Without this, I estimate at least 30-40% of iterations would be wasted on re-exploring dead ends.</p>
+<p><strong>The bash loop is surprisingly robust.</strong> The entire orchestration is a 345-line bash script (<code>run.sh</code>) that calls <code>claude -p</code> with constructed prompts. No framework, no agent SDK, no LangChain. Just bash, jq, bc, and Claude. It handles timeouts, NaN detection, git operations, multi-seed validation, and plateau detection. I ran it overnight for multiple sessions without intervention.</p>
+<p><strong>The agent is remarkably good at implementing ML ideas.</strong> Claude consistently produced working TensorFlow code for complex architectures (FT-Transformer, Manifold Mixup with custom <code>train_step</code>, learned loss weights). The 7.8% error rate is low considering the diversity of changes attempted.</p>
+<h2 id="what-id-do-differently">What I&rsquo;d Do Differently</h2>
+<p><strong>Start with multi-seed evaluation from iteration 1.</strong> The early iterations (1-267) used single-seed evaluation, and I suspect several &ldquo;improvements&rdquo; during that phase were noise. The multi-seed gate should have been the default from the start.</p>
+<p><strong>Use a larger validation set.</strong> Era downsampling to ~143 eras keeps training fast but makes the signal-to-noise ratio punishing. With more validation data, smaller improvements would be detectable.</p>
+<p><strong>Try fundamentally different model families earlier.</strong> Phases 1-4 spent 267 iterations tuning a feedforward network. The later phases (tabular architectures, training paradigms) produced the most interesting findings but had fewer iterations to explore them.</p>
+<p><strong>Track wall-clock cost.</strong> Each experiment takes 10-20 minutes (3-fold CV x 4 prediction seeds x ~3 min/fold). 358 experiments is roughly 60-120 hours of compute on a MacBook. Tracking cost per improvement would help decide when to stop.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Adapting autoresearch to Numerai required confronting the hardest parts of financial ML: noisy signals, time-series leakage, composite metrics, and the fundamental challenge of finding signal orthogonal to an existing ensemble. The 10 adaptations — from era-purged CV to the DO NOT RETRY table — are transferable to any domain where the evaluation is noisy, the metric is complex, or the search space is large.</p>
+<p>The most counterintuitive finding is that after 358 experiments spanning 20+ categories, the winning architecture is three Dense layers with GELU. No attention, no gating, no mixture of experts. Sometimes the simplest architecture is the right one — you just need 358 experiments to be confident of that.</p>
+<p>The winning model is submitted daily to the Numerai tournament as <a href="https://numer.ai/david_plutus_32">david_plutus_32</a> — you can track its live performance there.</p>
+]]></content>
+        </item>
         
         <item>
             <title>Why I Built My Own Transaction Categorizer</title>
