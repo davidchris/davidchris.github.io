@@ -7,8 +7,15 @@
     <generator>Hugo</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 26 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 20 May 2026 00:00:00 +0200</lastBuildDate>
     <atom:link href="https://david.wilde-ventures.com/tags/numerai/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Can Coding Agents Actually Do My Numerai Job?</title>
+      <link>https://david.wilde-ventures.com/posts/can-coding-agents-actually-do-my-numerai-job/</link>
+      <pubDate>Wed, 20 May 2026 00:00:00 +0200</pubDate>
+      <guid>https://david.wilde-ventures.com/posts/can-coding-agents-actually-do-my-numerai-job/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve been running a &lt;a href=&#34;https://numer.ai/~david_plutus&#34;&gt;Numerai Tournament bot&lt;/a&gt; for years. Download the dataset, train a model, submit predictions, watch the live score drift, iterate. It&amp;rsquo;s exactly the kind of bounded, feedback-rich, open-ended task that today&amp;rsquo;s coding agents claim to handle.&lt;/p&gt;&#xA;&lt;p&gt;That led to a concrete question: can Claude, Codex, or Gemini actually do this job end-to-end, without me holding their hand?&lt;/p&gt;&#xA;&lt;p&gt;That question turned into &lt;strong&gt;NumeraiAgentBench&lt;/strong&gt;: a benchmark that drops coding agents into a Docker container with a Numerai model id to submit to, a 24-hour timer, and one sentence of objective: &lt;em&gt;score as high as possible on the Numerai tournament leaderboard&lt;/em&gt;. Then measures what happens.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Adapting Karpathy&#39;s Autoresearch to Numerai: 358 Experiments Later</title>
       <link>https://david.wilde-ventures.com/posts/adapting-karpathy-autoresearch-to-numerai/</link>

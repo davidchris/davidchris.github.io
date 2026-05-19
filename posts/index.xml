@@ -6,8 +6,81 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Thu, 26 Mar 2026 00:00:00 +0000</lastBuildDate>
+        <lastBuildDate>Wed, 20 May 2026 00:00:00 +0200</lastBuildDate>
         <atom:link href="https://david.wilde-ventures.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Can Coding Agents Actually Do My Numerai Job?</title>
+            <link>https://david.wilde-ventures.com/posts/can-coding-agents-actually-do-my-numerai-job/</link>
+            <pubDate>Wed, 20 May 2026 00:00:00 +0200</pubDate>
+            
+            <guid>https://david.wilde-ventures.com/posts/can-coding-agents-actually-do-my-numerai-job/</guid>
+            <description>&lt;p&gt;I&amp;rsquo;ve been running a &lt;a href=&#34;https://numer.ai/~david_plutus&#34;&gt;Numerai Tournament bot&lt;/a&gt; for years. Download the dataset, train a model, submit predictions, watch the live score drift, iterate. It&amp;rsquo;s exactly the kind of bounded, feedback-rich, open-ended task that today&amp;rsquo;s coding agents claim to handle.&lt;/p&gt;
+&lt;p&gt;That led to a concrete question: can Claude, Codex, or Gemini actually do this job end-to-end, without me holding their hand?&lt;/p&gt;
+&lt;p&gt;That question turned into &lt;strong&gt;NumeraiAgentBench&lt;/strong&gt;: a benchmark that drops coding agents into a Docker container with a Numerai model id to submit to, a 24-hour timer, and one sentence of objective: &lt;em&gt;score as high as possible on the Numerai tournament leaderboard&lt;/em&gt;. Then measures what happens.&lt;/p&gt;</description>
+            <content type="html"><![CDATA[<p>I&rsquo;ve been running a <a href="https://numer.ai/~david_plutus">Numerai Tournament bot</a> for years. Download the dataset, train a model, submit predictions, watch the live score drift, iterate. It&rsquo;s exactly the kind of bounded, feedback-rich, open-ended task that today&rsquo;s coding agents claim to handle.</p>
+<p>That led to a concrete question: can Claude, Codex, or Gemini actually do this job end-to-end, without me holding their hand?</p>
+<p>That question turned into <strong>NumeraiAgentBench</strong>: a benchmark that drops coding agents into a Docker container with a Numerai model id to submit to, a 24-hour timer, and one sentence of objective: <em>score as high as possible on the Numerai tournament leaderboard</em>. Then measures what happens.</p>
+<p>Public dashboard: <a href="https://numerai-agent-bench.pages.dev">numerai-agent-bench.pages.dev</a></p>
+<p>Numerai profile: <a href="https://numer.ai/~nero_nab">https://numer.ai/~nero_nab</a></p>
+<h2 id="why-another-agent-benchmark">Why another agent benchmark</h2>
+<p>Most agent benchmarks are synthetic. Unit-test pass rates. Toy repos. Puzzles with known answers.</p>
+<p>Numerai is none of those. The data is obfuscated (you don&rsquo;t know what the features mean). Feedback is delayed 20 days (you can&rsquo;t overfit to validation). There&rsquo;s no ready-made solution that wins consecutively. A model that works last month might be worthless next month. This is closer to what &ldquo;doing ML work&rdquo; actually looks like.</p>
+<p>So instead of &ldquo;can the agent pass this test,&rdquo; the question becomes: can the agent research, choose a stack, build a pipeline, handle an external API, be compute efficient, and iterate from live scores?</p>
+<h2 id="the-setup">The setup</h2>
+<p>Each agent runs in its own Docker container on a dedicated workstation (i9, RTX 3090, 64GB RAM<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>). The base image ships Python, Node (for the agents), CUDA. The agent picks its own ML framework.</p>
+<p>Two difficulty levels are operational:</p>
+<ul>
+<li><strong>L3 Autonomous.</strong> One sentence of objective. Bounded compute time. Submission is done via a scheduler, agents provide the artifacts.</li>
+<li><strong>L4 Forever Loop.</strong> Same objective, no timeout. The agent runs indefinitely, iterating on its own models and submitting daily. If it crashes, a wrapper restarts it. State syncs to GitHub every couple of minutes.</li>
+</ul>
+<p>Two more levels (guided and directed) are designed but not built yet. L3 and L4 are the interesting ones, they&rsquo;re where the agent has room to actually be autonomous.</p>
+<p>Around each agent run I attached sidecars:</p>
+<ul>
+<li><strong>mitmproxy</strong> logs every HTTP call as JSONL</li>
+<li><strong>git-watcher</strong> auto-commits the workspace every 60 seconds</li>
+<li><strong>resource-monitor</strong> samples CPU, memory, GPU</li>
+</ul>
+<p>So the harness captures not just &ldquo;did it submit&rdquo; but <em>what it looked at, what it tried, what it threw away</em>.</p>
+<h2 id="what-i-learned-building-the-harness">What I learned building the harness</h2>
+<p><strong>Most of the work is not the agent.</strong> It&rsquo;s the plumbing. Lock management so only one agent runs at a time (because I&rsquo;m running this on my own server). Stale-lock recovery when a PID dies <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. State files that survive crashes with atomic tmp-file-rename writes. A submission window watcher (Numerai has daily windows, Tue–Sat) that fires off each agent&rsquo;s <code>submit.sh</code> in its original container, minus the heavy sidecars. Systemd. Ansible. CI/CD with rollback. This is ~300 pytest tests of infrastructure before you even talk about an agent.</p>
+<p><strong>Gatekeeper checks age badly.</strong> After I shipped L4 (the forever-loop mode), the agent was invisible on the public site for ten days despite 100+ git commits from its own workspace. L4 agents don&rsquo;t use <code>submit.sh</code> — they submit autonomously. But the round watcher was checking for <code>submit.sh</code> <em>before</em> checking the execution mode, so it silently skipped L4 every five minutes. A precondition that made sense for the original use case wasn&rsquo;t updated when a new mode was added. The fix was a two-line reorder.</p>
+<p><strong>Passive verification needs reconciliation.</strong> L4 agents can submit outside the scheduler&rsquo;s active polling window. Codex L4 made a later upload for round 1269, but the watcher had already stopped passive verification after 24 unsuccessful checks and recorded the round as unverified. The run summary saw the upload-like activity; the public watcher state still showed the abandoned May 16 record. For loop-mode agents, a finite retry window is not enough. The system needs a reconciliation step that can reopen or correct round outcomes when Numerai later reports a newer submission for the same model and round.</p>
+<h2 id="what-im-finding-about-the-agents">What I&rsquo;m finding about the agents</h2>
+<p><img src="/images/numerai-agent-bench/Claude-L3.png" alt="Claude L3 model performance"></p>
+<p><img src="/images/numerai-agent-bench/Claude-L4.png" alt="Claude L4 model performance"></p>
+<p><img src="/images/numerai-agent-bench/Codex-L4-diagnostics.png" alt="Codex L4 model diagnostics"></p>
+<p>I&rsquo;ll save the detailed scores for a follow-up, because the live tournament resolves on a ~20-day lag and I want honest numbers. Early impressions:</p>
+<ul>
+<li>Agents <em>can</em> go from cold start to first submission in L3. They do the research, download data, pick a stack (usually LightGBM, occasionally CatBoost or neural nets), and ship.</li>
+<li>The interesting variance isn&rsquo;t in the first submission. How quickly does the agent realize its feature engineering is weak? Does it try to diversify models or double down on one? Does it read the Numerai docs, or just pattern-match on Kaggle memories?</li>
+<li>L4 agents add a second class of behavior: they write their own long-running scaffolding. One agent spawned an autonomous loop as a background Python process, running independently from the Claude Code session. When the wrapper restarted Claude, the new session did not know about that process. The harness needs to account for agent-created processes, not only the top-level agent CLI.</li>
+<li>Codex L4 was the first agent I saw using Numerai&rsquo;s diagnostics endpoint systematically. It built a queue of hundreds of candidate submissions, uploaded diagnostics-sized prediction files, parsed the returned validation metrics, and promoted candidates based on validation CORR. That is useful behavior: the agent found an external evaluation surface and built a search loop around it. It is also a warning. Because MMC was not directly available in the diagnostics response it parsed, and because the L4 prompt only mentioned CORR/MMC without clearly stating MMC20 as the primary objective, the agent optimized the easiest visible signal. I have since changed the prompts so all levels state the same objective: achieve the highest possible rank under MMC20.</li>
+</ul>
+<h2 id="whats-next">What&rsquo;s next</h2>
+<p>The infrastructure is in place; the interesting work is now the analysis and reconciliation layer. Eight-plus weeks of live tournament runs have accumulated. I want to build the results layer that turns event logs, submissions, diagnostics activity, and live scores into claims I can defend.</p>
+<p>A few open threads:</p>
+<ul>
+<li>When do L4 agents plateau? Do they plateau at all, or drift?</li>
+<li>Are the agents <em>researching</em> or <em>remembering</em>? A network-capture ratio gives a crude signal here.</li>
+<li>Do the agents optimize the benchmark objective, or do they optimize the most available proxy signal?</li>
+<li>How should loop-mode submissions be reconciled after the scheduler&rsquo;s active polling window closes?</li>
+</ul>
+<p>I&rsquo;ll write more as the data comes in. If you want to follow along: the <a href="https://numerai-agent-bench.pages.dev">public dashboard</a> updates with each Numerai round, and I&rsquo;ll post results as they resolve.</p>
+<hr>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>I know it&rsquo;s old hardware. But this is what I have and it serves me well. Plus, it is cheaper for me to run locally than in the cloud.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p>Complicated scheduling logic is due to the fact that I want to give all agents roughly equal compute time, while staying on a single machine. Financial reasons.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+]]></content>
+        </item>
         
         <item>
             <title>Adapting Karpathy&#39;s Autoresearch to Numerai: 358 Experiments Later</title>
